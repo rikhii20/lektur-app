@@ -22,7 +22,7 @@ module.exports = {
           fullName: body.first_name,
           email: body.email,
           password: hashedPassword,
-          role : "Student"
+          role : "Admin"
         });
         const token = jwt.sign(
           {
