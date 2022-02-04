@@ -1,7 +1,5 @@
-const routes = require('../routes')
-const errorHandler = require("../middlewares/error")
+const routes = require("../routes");
 
-module.exports = function(app) {
-    app.use("/api/v1", routes);
-    app.use(errorHandler)
-}
+module.exports = function (app) {
+  app.use("/api/v1", routes);
+};
