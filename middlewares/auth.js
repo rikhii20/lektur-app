@@ -27,6 +27,7 @@ module.exports = {
       req.user = {
         id: user.id,
         email: user.email,
+        role: user.role,
       };
       next();
     } catch (err) {
