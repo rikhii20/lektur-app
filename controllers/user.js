@@ -94,7 +94,7 @@ module.exports = {
       } else {
         return res.status(400).json({
           status: "Bad Request",
-          message: "status just only for student and teacher",
+          message: "role only student and teacher",
           result: {},
         });
       }
