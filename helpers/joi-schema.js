@@ -11,6 +11,7 @@ module.exports = {
         '"password" should contain a mix of uppercase and lowercase letters, numbers, and special characters ',
       )
       .required(),
+    role: Joi.string().required(),
   }),
   loginSchema: Joi.object({
     email: Joi.string().email().required(),

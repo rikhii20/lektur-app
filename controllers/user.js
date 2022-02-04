@@ -6,9 +6,8 @@ const errorHandler = require("../utils/errorHandler");
 module.exports = {
   register: async (req, res) => {
     const body = req.body;
-    const { status } = req.query;
     try {
-      if (status == 1) {
+      if (body.role == "student") {
         const check = await User.findOne({
           where: {
             email: body.email,
@@ -18,6 +17,7 @@ module.exports = {
           return res.status(400).json({
             status: "Bad Request",
             message: "Email already exists",
+            result: {},
           });
         }
         const hashedPassword = await bcrypt.hash(body.password, 10);
@@ -25,38 +25,7 @@ module.exports = {
           fullName: body.fullName,
           email: body.email,
           password: hashedPassword,
-          isTeacher: status,
-        });
-        const token = jwt.sign(
-          {
-            id: user.id,
-            email: user.email,
-          },
-          process.env.SECRET_TOKEN,
-          { expiresIn: "24h" },
-        );
-        res.status(200).json({
-          status: "Success",
-          message: "Successfully to create an teacher account",
-          result: token,
-        });
-      } else {
-        const check = await User.findOne({
-          where: {
-            email: body.email,
-          },
-        });
-        if (check) {
-          return res.status(400).json({
-            status: "Bad Request",
-            message: "Email already exists",
-          });
-        }
-        const hashedPassword = await bcrypt.hash(body.password, 10);
-        const user = await User.create({
-          fullName: body.fullName,
-          email: body.email,
-          password: hashedPassword,
+          role: body.role,
         });
         const token = jwt.sign(
           {
@@ -69,7 +38,64 @@ module.exports = {
         res.status(200).json({
           status: "Success",
           message: "Successfully to create an student account",
-          result: token,
+          result: {
+            token,
+            user: {
+              id: user.id,
+              fullName: user.fullName,
+              email: user.email,
+              image: user.image,
+              role: user.role,
+            },
+          },
+        });
+      } else if (body.role == "teacher") {
+        const check = await User.findOne({
+          where: {
+            email: body.email,
+          },
+        });
+        if (check) {
+          return res.status(400).json({
+            status: "Bad Request",
+            message: "Email already exists",
+            result: {},
+          });
+        }
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const user = await User.create({
+          fullName: body.fullName,
+          email: body.email,
+          password: hashedPassword,
+          role: body.role,
+        });
+        const token = jwt.sign(
+          {
+            id: user.id,
+            email: user.email,
+          },
+          process.env.SECRET_TOKEN,
+          { expiresIn: "24h" },
+        );
+        res.status(200).json({
+          status: "Success",
+          message: "Successfully to create an teacher account",
+          result: {
+            token,
+            user: {
+              id: user.id,
+              fullName: user.fullName,
+              email: user.email,
+              image: user.image,
+              role: user.role,
+            },
+          },
+        });
+      } else {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: "status just only for student and teacher",
+          result: {},
         });
       }
     } catch (error) {
@@ -117,7 +143,7 @@ module.exports = {
             fullName: user.fullName,
             email: user.email,
             image: user.image,
-            isTeacher: user.isTeacher,
+            role: user.role,
           },
         },
       });

@@ -22,8 +22,8 @@ module.exports = {
         defaultValue:
           "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png",
       },
-      isTeacher: {
-        type: Sequelize.BOOLEAN,
+      role: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
