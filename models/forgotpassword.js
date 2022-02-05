@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   ForgotPassword.init({
     email: DataTypes.STRING,
     validationCode: DataTypes.STRING,
-    isDone: DataTypes.STRING
+    isDone: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'ForgotPassword',

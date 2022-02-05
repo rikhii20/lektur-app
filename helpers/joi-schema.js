@@ -17,4 +17,14 @@ module.exports = {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
+  resetPasswordSchema : Joi.object({
+    password: Joi.string()
+      .min(5)
+      .regex(/^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-z])/)
+      .message(
+        '"password" should contain a mix of uppercase and lowercase letters, numbers, and special characters '
+      )
+      .required(),
+    validationCode: Joi.string().required(),
+  })
 };
