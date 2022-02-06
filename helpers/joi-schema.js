@@ -26,5 +26,9 @@ module.exports = {
       )
       .required(),
     validationCode: Joi.string().required(),
-  })
+  }),
+  editProfileSchema: Joi.object({
+    email: Joi.string().email().trim().lowercase().required(), 
+    fullName: Joi.string().required(),
+  }),
 };

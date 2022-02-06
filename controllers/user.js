@@ -227,7 +227,7 @@ module.exports = {
         result: {},
       });
     } catch (error) {
-      catchError(error, res);
+      errorHandler(error, res);
     }
   },
   loginGoogle : async (req, res) => {
@@ -245,7 +245,25 @@ module.exports = {
         },
       });
     } catch (error){
-      catchError(error, res)
+      errorHandler(error, res)
     }
-  }
+  },
+  editProfile: async (req, res) => {
+    try {
+      const { fullName, email } = await req.body;
+      await User.update(
+        {
+          fullName : fullName,
+          email: email,
+        },
+        { where: { id: req.user.id } }
+      ); 
+      res.status(200).json({
+        status: "Success",
+        message: "Profile updated",
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
 }

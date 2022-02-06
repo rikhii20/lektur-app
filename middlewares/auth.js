@@ -1,5 +1,6 @@
-const { Users } = require("../models");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
+const {errorHandler} = require("../utils/errorHandler")
 
 module.exports = {
   isLogin: async (req, res, next) => {
@@ -13,7 +14,7 @@ module.exports = {
       }
       token = token.replace("Bearer ", "");
       const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-      const user = await Users.findOne({
+      const user = await User.findOne({
         where: {
           id: decoded.id,
         },
@@ -29,8 +30,8 @@ module.exports = {
         email: user.email,
       };
       next();
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      errorHandler(error, res);
     }
   },
   isTeacher: async (req, res, next) => {
@@ -45,7 +46,7 @@ module.exports = {
       }
       token = token.replace("Bearer ", "");
       const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-      const user = await Users.findOne({
+      const user = await User.findOne({
         where: {
           id: decoded.id,
         },

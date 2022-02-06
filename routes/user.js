@@ -1,10 +1,12 @@
 const express = require("express");
-const { register, login, forgotPassword, resetPassword, loginGoogle } = require("../controllers/user");
-const { registerSchema, loginSchema, resetPasswordSchema } = require("../helpers/joi-schema");
-const { validate } = require("../middlewares/validator");
 const router = express.Router();
 
-const passport = require("passport")
+const { register, login, forgotPassword, resetPassword, loginGoogle, editProfile } = require("../controllers/user");
+const { registerSchema, loginSchema, resetPasswordSchema, editProfileSchema } = require("../helpers/joi-schema");
+const { validate } = require("../middlewares/validator");
+const { isLogin } = require("../middlewares/auth");
+
+const passport = require("passport");
 require("../helpers/passport")
 
 
@@ -12,6 +14,7 @@ router.post("/register", validate(registerSchema) ,register);
 router.post("/login", validate(loginSchema), login);
 router.post("/forgot-password", forgotPassword)
 router.post("/reset-password",validate(resetPasswordSchema), resetPassword)
+router.post("/edit-profile",  isLogin , validate(editProfileSchema) ,editProfile)
 
 router.get(
     '/google',
