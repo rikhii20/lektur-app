@@ -109,7 +109,7 @@ module.exports = {
     try {
       const user = await User.findOne({
         where: {
-          email,
+          email : email.trim().toLowerCase(),
         },
       });
       if (!user) {
