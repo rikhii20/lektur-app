@@ -266,4 +266,22 @@ module.exports = {
       errorHandler(error, res);
     }
   },
+  uploadImage: async (req, res) => {
+    try {
+      const path = await req.file;
+      await User.update(
+        {
+          image: path,
+        },
+        { where: { id: req.user.id } }
+      );
+      res.status(200).json({
+        status: "Success",
+        message: "Profile photo updated",
+        result: path,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
 }

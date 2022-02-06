@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { register, login, forgotPassword, resetPassword, loginGoogle, editProfile } = require("../controllers/user");
+const { register, login, forgotPassword, resetPassword, loginGoogle, editProfile, uploadImage } = require("../controllers/user");
 const { registerSchema, loginSchema, resetPasswordSchema, editProfileSchema } = require("../helpers/joi-schema");
 const { validate } = require("../middlewares/validator");
 const { isLogin } = require("../middlewares/auth");
@@ -15,6 +15,7 @@ router.post("/login", validate(loginSchema), login);
 router.post("/forgot-password", forgotPassword)
 router.post("/reset-password",validate(resetPasswordSchema), resetPassword)
 router.post("/edit-profile",  isLogin , validate(editProfileSchema) ,editProfile)
+router.put("/upload",isLogin , uploadImage)
 
 router.get(
     '/google',
