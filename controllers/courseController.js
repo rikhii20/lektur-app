@@ -51,7 +51,6 @@ const courseController = {
       errorHandler(error, res);
     }
   },
-
   getAllCourses: async (req, res) => {
     try {
       const course = await Course.findAll({
@@ -95,7 +94,6 @@ const courseController = {
       errorHandler(error, res);
     }
   },
-
   getCourse: async (req, res) => {
     const { courseId } = req.params;
     try {
@@ -121,7 +119,6 @@ const courseController = {
       errorHandler(res, error);
     }
   },
-
   updateCourse: async (req, res) => {
     const body = req.body;
     const { courseId } = req.params;
@@ -173,7 +170,6 @@ const courseController = {
       errorHandler(res, error);
     }
   },
-
   deleteCourse: async (req, res) => {
     const { courseId } = req.params;
     try {
