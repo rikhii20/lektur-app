@@ -18,7 +18,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       course_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Courses",
+          key: "id"
+        }
       },
       createdAt: {
         allowNull: false,
@@ -29,7 +33,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       completedAt: {
-        allowNull:false,
+        allowNull: false,
         type: Sequelize.DATE
       }
     });
