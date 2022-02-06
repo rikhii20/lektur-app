@@ -1,4 +1,4 @@
-const { Users } = require("../models");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -37,6 +37,7 @@ module.exports = {
   isTeacher: async (req, res, next) => {
     try {
       let token = req.header("Authorization");
+
       if (!token) {
         return res.status(401).json({
           status: "Unauthorized",
@@ -46,7 +47,8 @@ module.exports = {
       }
       token = token.replace("Bearer ", "");
       const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-      const user = await Users.findOne({
+
+      const user = await User.findOne({
         where: {
           id: decoded.id,
         },
@@ -57,7 +59,7 @@ module.exports = {
           message: "User not found",
         });
       }
-      if (user.status != "teacher") {
+      if (user.role != "teacher") {
         return res.status(401).json({
           status: "Unauthorized",
           message: "You have no right to access this end point",

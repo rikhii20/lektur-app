@@ -1,21 +1,29 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Materials", {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
+      fullName: {
         type: Sequelize.STRING,
       },
-      url: {
+      email: {
         type: Sequelize.STRING,
       },
-      content_id: {
-        type: Sequelize.INTEGER,
+      password: {
+        type: Sequelize.STRING,
+      },
+      image: {
+        type: Sequelize.STRING,
+        defaultValue:
+          "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png",
+      },
+      role: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -25,9 +33,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Materials");
+    await queryInterface.dropTable("Users");
   },
 };

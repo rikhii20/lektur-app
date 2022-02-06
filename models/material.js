@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Material.belongsTo(models.Content, {
+        as: "content",
+        foreignKey: "content_id",
+      });
     }
   }
   Material.init(

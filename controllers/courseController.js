@@ -1,6 +1,6 @@
 const joi = require("joi");
-const { Course } = require("../models");
-const { errorHandler } = require("../utils/errorHandler");
+const { Course, Content, Material } = require("../models");
+const errorHandler = require("../utils/errorHandler");
 
 const courseController = {
   createCourse: async (req, res) => {
@@ -11,11 +11,15 @@ const courseController = {
         title: joi.string().required(),
         image: joi.string().required(),
         description: joi.string().required(),
-        teacher_id: joi.number().required(),
+        user_id: joi.number().required(),
         category_id: joi.number().required(),
       });
 
-      const { error } = schema.validate({ ...body, image: file.path });
+      const { error } = schema.validate({
+        ...body,
+        image: file.path,
+        user_id: req.user.id,
+      });
 
       if (error) {
         res.status(400).json({
@@ -25,7 +29,11 @@ const courseController = {
         });
       }
 
-      const course = await Course.create({ ...body, image: file.path });
+      const course = await Course.create({
+        ...body,
+        image: file.path,
+        user_id: req.user.id,
+      });
       if (!course) {
         res.status(404).json({
           status: "Not Found",
@@ -40,26 +48,38 @@ const courseController = {
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
 
   getAllCourses: async (req, res) => {
     try {
       const course = await Course.findAll({
-        limit: 8,
         order: [["createdAt", "DESC"]],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
         include: [
           {
-            model: content,
-          },
-          {
-            model: material,
+            model: Content,
+            as: "content",
+            include: [
+              {
+                model: Material,
+                as: "material",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+            ],
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
           },
         ],
       });
-      if (!course.length == 0) {
-        res.status(404).json({
+      if (course.length == 0) {
+        return res.status(404).json({
           status: "Not Found",
           message: "Database is empty",
           result: {},
@@ -72,7 +92,7 @@ const courseController = {
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
 

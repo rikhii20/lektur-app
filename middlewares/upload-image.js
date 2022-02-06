@@ -1,13 +1,40 @@
 const multer = require("multer");
-const cloudinary = require('../config/cloudinary')
-const { CloudinaryStorage } = require('multer-storage-cloudinary')
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'Belum ditentukan', //catatan
-        format: async (req,file)=> 'png'
-    }
-})
+module.exports = {
+  uploadCloud: (fieldName) => {
+    const storage = new CloudinaryStorage({
+      cloudinary: cloudinary,
+      params: (req, file) => {
+        return {
+          folder: fieldName,
+          resource_type: "raw",
+          public_id: `${Date.now()}-${file.originalname}`,
+        };
+      },
+    });
 
-module.exports = multer({storage: storage})
+    // const fileFilter = (req, file, cb) => {
+    //   if (!file.mimetype.includes("image")) {
+    //     return cb(new Error("Please select image files only"), false);
+    //   }
+    //   cb(null, true);
+    // };
+
+    const upload = multer({ storage }).single(fieldName);
+
+    return (req, res, next) => {
+      upload(req, res, (err) => {
+        if (err) {
+          return res.status(400).json({
+            status: "Bad Request",
+            message: err.message,
+            result: {},
+          });
+        }
+        next();
+      });
+    };
+  },
+};

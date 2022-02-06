@@ -10,8 +10,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Course.belongsTo(models.User, {
-        as: "teacher",
-        foreignKey: "teacher_id",
+        as: "users",
+        foreignKey: "user_id",
+      });
+      Course.hasMany(models.Category, {
+        as: "category",
+        foreignKey: "category_id",
+      });
+      Course.hasMany(models.Content, {
+        as: "content",
+        foreignKey: "course_id",
       });
     }
   }
@@ -20,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       image: DataTypes.STRING,
       description: DataTypes.TEXT,
-      teacher_id: DataTypes.INTEGER,
+      user_id: DataTypes.INTEGER,
       category_id: DataTypes.INTEGER,
     },
     {

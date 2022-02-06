@@ -17,7 +17,7 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
       },
-      teacher_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
@@ -28,6 +28,12 @@ module.exports = {
       },
       category_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "Categories",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       createdAt: {
         allowNull: false,
