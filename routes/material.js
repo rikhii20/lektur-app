@@ -6,10 +6,10 @@ const {
 } = require("../controllers/materialController");
 const router = express.Router();
 const { isTeacher } = require("../middlewares/auth");
-const { uploadCloud } = require("../middlewares/upload-image");
+const { uploadCloud } = require("../middlewares/upload-files");
 
-router.post("/", isTeacher, uploadCloud("url"), createMaterial);
-router.put("/:id", isTeacher, uploadCloud("url"), updateMaterial);
+router.post("/", isTeacher, uploadCloud("url", "pdf"), createMaterial);
+router.put("/:id", isTeacher, uploadCloud("url", "pdf"), updateMaterial);
 router.delete("/:id", isTeacher, deleteMaterial);
 
 module.exports = router;
