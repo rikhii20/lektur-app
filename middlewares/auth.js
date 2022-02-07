@@ -13,7 +13,7 @@ module.exports = {
       }
       token = token.replace("Bearer ", "");
       const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-      const user = await Users.findOne({
+      const user = await User.findOne({
         where: {
           id: decoded.id,
         },
