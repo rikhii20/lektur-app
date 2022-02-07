@@ -9,7 +9,7 @@ module.exports = {
       params: (req, file) => {
         return {
           folder: fieldName,
-          resource_type: "raw",
+          resource_type: "auto",
           public_id: `${Date.now()}-${file.originalname}`,
         };
       },
