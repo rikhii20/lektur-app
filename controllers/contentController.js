@@ -46,6 +46,7 @@ module.exports = {
   getContents: async (req, res) => {
     try {
       const contents = await Content.findAll({
+        order: [["createdAt", "ASC"]],
         include: [
           {
             model: Material,

@@ -54,7 +54,6 @@ const courseController = {
   getAllCourses: async (req, res) => {
     try {
       const course = await Course.findAll({
-        order: [["createdAt", "DESC"]],
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
