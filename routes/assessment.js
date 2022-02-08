@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { createAssignment, getAssignment, getAllAssignment } = require("../controllers/assessment");
+const {
+	createAssessment, getAllAssessment, getAssessment, updateAssessment, deleteAssessment,
+} = require("../controllers/assessment");
 
 
-router.post('/', createAssignment);
+router.post('/', createAssessment);
+router.get('/:id', getAssessment);
+router.put('/:id', updateAssessment);
+router.delete('/:id', deleteAssessment);
 
-router.get('/:questionId', getAssignment);
-
-router.get('/', getAllAssignment);
+router.get('/', getAllAssessment);
 
 module.exports = router;
