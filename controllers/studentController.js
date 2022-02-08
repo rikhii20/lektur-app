@@ -120,4 +120,75 @@ module.exports = {
       errorHandler(error, res);
     }
   },
+  getPopupContent: async (req, res) => {
+    let { id } = req.params;
+    try {
+      const student = await Course.findOne({
+        attributes: ["title"],
+        include: [
+          {
+            model: Content,
+            as: "content",
+            attributes: ["title"],
+          },
+        ],
+        where: {
+          id,
+        },
+      });
+      if (!student) {
+        return res.status(404).json({
+          status: "Data Not Found",
+          message: `Can't find a data with id ${id}`,
+          result: {},
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully restieve the data",
+        result: student,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getPopupMaterial: async (req, res) => {
+    let { id } = req.params;
+    try {
+      const student = await Course.findOne({
+        attributes: ["title"],
+        include: [
+          {
+            model: Content,
+            as: "content",
+            attributes: ["title"],
+            include: [
+              {
+                model: Material,
+                as: "material",
+                attributes: ["name"],
+              },
+            ],
+          },
+        ],
+        where: {
+          id,
+        },
+      });
+      if (!student) {
+        return res.status(404).json({
+          status: "Data Not Found",
+          message: `Can't find a data with id ${id}`,
+          result: {},
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully restieve the data",
+        result: student,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
 };
