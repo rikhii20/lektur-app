@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const errorHandler = require("../utils/errorHandler");
 const randomstring = require("randomstring");
 const sendMail = require("../middlewares/send-mail");
+const cloudinary = require("cloudinary")
 
 module.exports = {
   register: async (req, res) => {
@@ -248,6 +249,20 @@ module.exports = {
       errorHandler(error, res)
     }
   },
+  fetchAccountInfo: async (req, res) => {
+    try {
+      const data = await User.findByPk(req.user.id, {
+        attributes: ["fullName", "email", "image"],
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Profile Fetched",
+        result: data,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
   editProfile: async (req, res) => {
     try {
       const { fullName, email } = await req.body;
@@ -279,6 +294,56 @@ module.exports = {
         status: "Success",
         message: "Profile photo updated",
         result: path,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  deleteImage: async (req, res) => {
+    try {
+      const { image } = await User.findByPk(req.user.id)
+      const public_id = await image.substr(60)
+      console.log(public_id)
+      await cloudinary.v2.api.delete_resources(public_id); 
+
+      User.update({
+        image: "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png"
+      }, {
+        where: { id: req.user.id }
+      })
+      res.status(200).json({
+        status: "Success",
+        message: "image deleted",
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  changePassword: async (req, res) => {
+    try {
+      const { newPassword, oldPassword } = await req.body;
+      const { password } = await User.findByPk(req.user.id, {
+        attributes: ["password"],
+      });
+      const comp = bcrypt.compareSync(oldPassword, password);
+      if (!comp)
+        return res.status(500).json({
+          status: "failed",
+          message: "Password did not match",
+        });
+      await User.update(
+        {
+          password: bcrypt.hashSync(newPassword, 10),
+        },
+        {
+          where: {
+            id: req.user.id,
+          },
+        }
+      );
+      res.status(200).json({
+        status: "Success",
+        message: "Password updated",
       });
     } catch (error) {
       errorHandler(error, res);

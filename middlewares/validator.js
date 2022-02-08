@@ -1,3 +1,5 @@
+const errorHandler = require("../utils/errorHandler")
+
 module.exports.validate = (schema) => {
     return async (req, res, next) => {
       try {
@@ -9,8 +11,8 @@ module.exports.validate = (schema) => {
             message: error.message,
           });
         next();
-      } catch (err) {
-        next(err);
+      } catch (error) {
+        errorHandler(error, res);
       }
     };
   };
