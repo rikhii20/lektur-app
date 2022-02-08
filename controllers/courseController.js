@@ -1,6 +1,7 @@
 const joi = require("joi");
 const { Course, Content, Material } = require("../models");
 const errorHandler = require("../utils/errorHandler");
+const { Op } = require("sequelize");
 
 const courseController = {
   createCourse: async (req, res) => {
@@ -52,8 +53,44 @@ const courseController = {
     }
   },
   getAllCourses: async (req, res) => {
+    let { category, page, limit, keyword } = req.query;
+    
     try {
+
+      let search;
+      if (keyword) {
+        search = {
+          title: {
+            [Op.iLike]: `%${keyword}%`,
+          },
+        };
+      }
+
+      let cat;
+      if (category) {
+        cat = {
+          name: {
+            [Op.iLike]: category,
+          },
+        };
+      } else {
+        cat = category;
+      }
+
+if (!page) {
+  page = 1;
+}
+
+let limitation;
+if (!limit) {
+  limitation = 8;
+} else {
+  limitation = Number(limit);
+}
+
       const course = await Course.findAll({
+        limit: limitation,
+        offset: (page - 1) * limitation,
         order: [["createdAt", "DESC"]],
         attributes: {
           exclude: ["createdAt", "updatedAt"],
@@ -71,12 +108,16 @@ const courseController = {
                 },
               },
             ],
+            where: {
+              ...search
+            },
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
           },
         ],
       });
+
       if (course.length == 0) {
         return res.status(404).json({
           status: "Not Found",
@@ -99,7 +140,27 @@ const courseController = {
     try {
       const course = await Course.findOne({
         where: { courseId },
-        include: [{ model: Content }],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Content,
+            as: "content",
+            include: [
+              {
+                model: Material,
+                as: "material",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+            ],
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
       });
 
       if (!course) {
@@ -119,6 +180,7 @@ const courseController = {
       errorHandler(res, error);
     }
   },
+  
   updateCourse: async (req, res) => {
     const body = req.body;
     const { courseId } = req.params;
