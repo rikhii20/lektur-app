@@ -1,12 +1,14 @@
 const joi = require("joi");
-const { Course, Content, Material } = require("../models");
+const { Course, Content, Material, User } = require("../models");
 const errorHandler = require("../utils/errorHandler");
+const { Op } = require("sequelize");
 
 const courseController = {
   createCourse: async (req, res) => {
     const body = req.body;
     const file = req.file;
     try {
+      
       const schema = joi.object({
         title: joi.string().required(),
         image: joi.string().required(),
@@ -52,8 +54,55 @@ const courseController = {
     }
   },
   getAllCourses: async (req, res) => {
+    let { category, page, limit, keyword } = req.query;
+    
+
     try {
+
+      let search;
+      if (keyword) {
+        search = {
+          [Op.or] : [
+            {
+              title : {
+                [Op.iLike] :`%${keyword}%`
+              }
+            },
+            {
+              "$by.fullName$" : {
+                [Op.iLike] :`%${keyword}%`
+              }
+            }
+          ],
+        };
+      }
+
+      let cat;
+      if (category) {
+        cat = {
+          name: {
+            [Op.iLike]: category,
+          },
+        };
+      } else {
+        cat = category;
+      }
+
+      if (!page) {
+        page = 1;
+      }
+
+      let limitation;
+      if (!limit) {
+        limitation = 8;
+      } else {
+        limitation = Number(limit);
+      }
+
       const course = await Course.findAll({
+        limit: limitation,
+        offset: (page - 1) * limitation,
+
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -74,7 +123,15 @@ const courseController = {
               exclude: ["createdAt", "updatedAt"],
             },
           },
+          {
+            model : User,
+            as : "by",
+          }
         ],
+        where: {
+          ...search
+        },
+
       });
       if (course.length == 0) {
         return res.status(404).json({
@@ -98,7 +155,28 @@ const courseController = {
     try {
       const course = await Course.findOne({
         where: { courseId },
-        include: [{ model: Content }],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Content,
+            as: "content",
+            include: [
+              {
+                model: Material,
+                as: "material",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+            ],
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+
       });
 
       if (!course) {
