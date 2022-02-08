@@ -83,9 +83,19 @@ module.exports = {
         where: {
           id,
         },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Material,
+            as: "material",
+            attributes: ["name", "url"],
+          },
+        ],
       });
       if (!content) {
-        return status(404).json({
+        return res.status(404).json({
           status: "Not Found",
           message: `Can't find the data with id ${id}`,
           result: {},

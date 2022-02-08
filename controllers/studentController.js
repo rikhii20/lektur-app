@@ -31,7 +31,7 @@ module.exports = {
       }
       const check = await StudentCourse.findOne({
         where: {
-          id,
+          course_id: id,
         },
       });
       if (check) {
@@ -125,6 +125,7 @@ module.exports = {
     try {
       const student = await Course.findOne({
         attributes: ["title"],
+        order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
         include: [
           {
             model: Content,
