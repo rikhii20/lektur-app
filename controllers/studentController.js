@@ -23,7 +23,7 @@ module.exports = {
         });
       }
       if (user.role == "teacher") {
-        return res.status(401).json({
+        return res.status(400).json({
           status: "Bad Request",
           message: "Course is only for students",
           result: {},
