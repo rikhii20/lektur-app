@@ -25,19 +25,31 @@ module.exports = {
       if (user.role == "teacher") {
         return res.status(400).json({
           status: "Bad Request",
-          message: "Course is only for students",
+          message: "Course is only for student",
           result: {},
         });
       }
-      const check = await StudentCourse.findOne({
+      const existStudent = await StudentCourse.findOne({
         where: {
           course_id: id,
         },
       });
-      if (check) {
+      if (existStudent) {
         return res.status(400).json({
           status: "Bad Request",
           message: "You have already enrolled the course",
+          result: {},
+        });
+      }
+      const checkCourse = await Course.findOne({
+        where: {
+          id,
+        },
+      });
+      if (!checkCourse) {
+        return res.status(404).json({
+          status: "Bad Request",
+          message: `Can't find course with id ${id}`,
           result: {},
         });
       }
@@ -62,8 +74,12 @@ module.exports = {
     }
   },
   getStudent: async (req, res) => {
+    const { id } = req.params;
     try {
       const student = await StudentCourse.findAll({
+        where: {
+          student_id: id,
+        },
         attributes: {
           exclude: ["createdAt", "updatedAt", "course_id", "student_id"],
         },
@@ -79,12 +95,12 @@ module.exports = {
             model: Course,
             as: "course",
             attributes: {
-              exclude: ["createdAt", "updatedAt"],
+              exclude: ["createdAt", "updatedAt", "user_id", "category_id"],
             },
             include: [
               {
                 model: User,
-                as: "By",
+                as: "by",
                 attributes: ["fullname", "role"],
               },
               {
