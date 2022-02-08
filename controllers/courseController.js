@@ -56,12 +56,16 @@ const courseController = {
   getAllCourses: async (req, res) => {
     let { category, page, limit, keyword } = req.query;
     
+<<<<<<< HEAD
 
+=======
+>>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
     try {
 
       let search;
       if (keyword) {
         search = {
+<<<<<<< HEAD
           [Op.or] : [
             {
               title : {
@@ -74,6 +78,11 @@ const courseController = {
               }
             }
           ],
+=======
+          title: {
+            [Op.iLike]: `%${keyword}%`,
+          },
+>>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
         };
       }
 
@@ -88,6 +97,7 @@ const courseController = {
         cat = category;
       }
 
+<<<<<<< HEAD
       if (!page) {
         page = 1;
       }
@@ -98,11 +108,27 @@ const courseController = {
       } else {
         limitation = Number(limit);
       }
+=======
+if (!page) {
+  page = 1;
+}
+
+let limitation;
+if (!limit) {
+  limitation = 8;
+} else {
+  limitation = Number(limit);
+}
+>>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
 
       const course = await Course.findAll({
         limit: limitation,
         offset: (page - 1) * limitation,
+<<<<<<< HEAD
 
+=======
+        order: [["createdAt", "DESC"]],
+>>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -119,6 +145,9 @@ const courseController = {
                 },
               },
             ],
+            where: {
+              ...search
+            },
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
@@ -133,6 +162,7 @@ const courseController = {
         },
 
       });
+
       if (course.length == 0) {
         return res.status(404).json({
           status: "Not Found",
@@ -176,7 +206,10 @@ const courseController = {
             },
           },
         ],
+<<<<<<< HEAD
 
+=======
+>>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
       });
 
       if (!course) {
@@ -196,6 +229,7 @@ const courseController = {
       errorHandler(res, error);
     }
   },
+  
   updateCourse: async (req, res) => {
     const body = req.body;
     const { courseId } = req.params;
