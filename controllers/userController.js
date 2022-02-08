@@ -319,4 +319,34 @@ module.exports = {
       errorHandler(error, res);
     }
   },
+  changePassword: async (req, res) => {
+    try {
+      const { newPassword, oldPassword } = await req.body;
+      const { password } = await User.findByPk(req.user.id, {
+        attributes: ["password"],
+      });
+      const comp = bcrypt.compareSync(oldPassword, password);
+      if (!comp)
+        return res.status(500).json({
+          status: "failed",
+          message: "Password did not match",
+        });
+      await User.update(
+        {
+          password: bcrypt.hashSync(newPassword, 10),
+        },
+        {
+          where: {
+            id: req.user.id,
+          },
+        }
+      );
+      res.status(200).json({
+        status: "Success",
+        message: "Password updated",
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
 }

@@ -11,6 +11,7 @@ const {
   loginGoogle,
   fetchAccountInfo,
   deleteImage,
+  changePassword,
 } = require("../controllers/userController");
 const {
   registerSchema,
@@ -32,6 +33,7 @@ router.post("/edit", isLogin, validate(editProfileSchema), editProfile);
 router.put("/upload", isLogin, uploadImage);
 router.get("/profile", isLogin, fetchAccountInfo);
 router.delete("/delete-image", isLogin, deleteImage)
+router.put("/change-password", isLogin, changePassword)
 
 router.get(
   "/google",
