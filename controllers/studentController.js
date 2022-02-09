@@ -4,7 +4,7 @@ const { StudentCourse, User, Course, Content, Material } = require("../models");
 
 module.exports = {
   enrollCourse: async (req, res) => {
-    const { id } = req.params;
+    const { courseId } = req.query;
     const { user } = req;
     try {
       const schema = Joi.object({
@@ -13,7 +13,7 @@ module.exports = {
       });
       const { error } = schema.validate({
         student_id: user.id,
-        course_id: id,
+        course_id: courseId,
       });
       if (error) {
         return res.status(400).json({
@@ -31,7 +31,7 @@ module.exports = {
       }
       const existStudent = await StudentCourse.findOne({
         where: {
-          course_id: id,
+          course_id: courseId,
         },
       });
       if (existStudent) {
@@ -43,19 +43,19 @@ module.exports = {
       }
       const checkCourse = await Course.findOne({
         where: {
-          id,
+          id: courseId,
         },
       });
       if (!checkCourse) {
         return res.status(404).json({
           status: "Bad Request",
-          message: `Can't find course with id ${id}`,
+          message: `Can't find course with id ${courseId}`,
           result: {},
         });
       }
       const enroll = await StudentCourse.create({
         student_id: user.id,
-        course_id: id,
+        course_id: courseId,
       });
       if (!enroll) {
         return res.status(400).json({
@@ -73,12 +73,12 @@ module.exports = {
       errorHandler(error, res);
     }
   },
-  getStudent: async (req, res) => {
-    const { id } = req.params;
+  getProfile: async (req, res) => {
+    const { studentId } = req.query;
     try {
       const student = await StudentCourse.findAll({
         where: {
-          student_id: id,
+          student_id: studentId,
         },
         attributes: {
           exclude: ["createdAt", "updatedAt", "course_id", "student_id"],
@@ -101,7 +101,7 @@ module.exports = {
               {
                 model: User,
                 as: "by",
-                attributes: ["fullname", "role"],
+                attributes: ["fullName", "role"],
               },
               {
                 model: Content,
@@ -130,78 +130,6 @@ module.exports = {
       res.status(200).json({
         status: "Success",
         message: "Successfully retrieve the data",
-        result: student,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getPopupContent: async (req, res) => {
-    let { id } = req.params;
-    try {
-      const student = await Course.findOne({
-        attributes: ["title"],
-        order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
-        include: [
-          {
-            model: Content,
-            as: "content",
-            attributes: ["title"],
-          },
-        ],
-        where: {
-          id,
-        },
-      });
-      if (!student) {
-        return res.status(404).json({
-          status: "Data Not Found",
-          message: `Can't find a data with id ${id}`,
-          result: {},
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully restieve the data",
-        result: student,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getPopupMaterial: async (req, res) => {
-    let { id } = req.params;
-    try {
-      const student = await Course.findOne({
-        attributes: ["title"],
-        include: [
-          {
-            model: Content,
-            as: "content",
-            attributes: ["title"],
-            include: [
-              {
-                model: Material,
-                as: "material",
-                attributes: ["name"],
-              },
-            ],
-          },
-        ],
-        where: {
-          id,
-        },
-      });
-      if (!student) {
-        return res.status(404).json({
-          status: "Data Not Found",
-          message: `Can't find a data with id ${id}`,
-          result: {},
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully restieve the data",
         result: student,
       });
     } catch (error) {

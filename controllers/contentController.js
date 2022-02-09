@@ -1,11 +1,12 @@
 const Joi = require("joi");
-const { Content, Material } = require("../models");
+const { Content, Material, Course } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 
 module.exports = {
   createContent: async (req, res) => {
     const body = req.body;
     const file = req.file;
+    const { courseId } = req.query;
     try {
       const schema = Joi.object({
         title: Joi.string().required(),
@@ -16,16 +17,31 @@ module.exports = {
       const { error } = schema.validate({
         ...body,
         video: file.path,
+        course_id: courseId,
       });
       if (error) {
         return res.status(400).json({
           status: "Bad Request",
           message: error.message,
+          result: {},
+        });
+      }
+      const check = await Course.findOne({
+        where: {
+          id: courseId,
+        },
+      });
+      if (!check) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: `Can't find course with id ${courseId}`,
+          result: {},
         });
       }
       const content = await Content.create({
         ...body,
         video: file.path,
+        course_id: courseId,
       });
       if (!content) {
         return res.status(500).json({
@@ -77,11 +93,11 @@ module.exports = {
     }
   },
   getContent: async (req, res) => {
-    const { id } = req.params;
+    const { contentId } = req.params;
     try {
       const content = await Content.findOne({
         where: {
-          id,
+          id: contentId,
         },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
@@ -97,7 +113,7 @@ module.exports = {
       if (!content) {
         return res.status(404).json({
           status: "Not Found",
-          message: `Can't find the data with id ${id}`,
+          message: `Can't find the data with id ${contentId}`,
           result: {},
         });
       }
@@ -111,7 +127,7 @@ module.exports = {
     }
   },
   updateContent: async (req, res) => {
-    const { id } = req.params;
+    const { contentId } = req.query;
     const body = req.body;
     const file = req.file;
     try {
@@ -126,6 +142,7 @@ module.exports = {
         return res.status(400).json({
           status: "Bad Request",
           message: error.message,
+          result: {},
         });
       }
       let update;
@@ -134,7 +151,7 @@ module.exports = {
           { ...body },
           {
             where: {
-              id,
+              id: contentId,
             },
           },
         );
@@ -143,7 +160,7 @@ module.exports = {
           { ...body, video: file.path },
           {
             where: {
-              id,
+              id: contentId,
             },
           },
         );
@@ -157,7 +174,7 @@ module.exports = {
       }
       const content = await Content.findOne({
         where: {
-          id,
+          id: contentId,
         },
       });
       res.status(200).json({
@@ -170,11 +187,11 @@ module.exports = {
     }
   },
   deleteContent: async (req, res) => {
-    const { id } = req.params;
+    const { contentId } = req.query;
     try {
       const content = await Content.destroy({
         where: {
-          id,
+          id: contentId,
         },
       });
       if (!content) {

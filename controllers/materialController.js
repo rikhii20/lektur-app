@@ -1,11 +1,12 @@
 const Joi = require("joi");
-const { Material } = require("../models");
+const { Material, Content } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 
 module.exports = {
   createMaterial: async (req, res) => {
     const body = req.body;
     const file = req.file;
+    const { contentId } = req.query;
     try {
       const schema = Joi.object({
         name: Joi.string().required(),
@@ -15,6 +16,7 @@ module.exports = {
       const { error } = schema.validate({
         ...body,
         url: file.path,
+        content_id: contentId,
       });
       if (error) {
         return res.status(500).json({
@@ -22,9 +24,21 @@ module.exports = {
           message: error.message,
         });
       }
+      const check = await Content.findOne({
+        where: {
+          id: contentId,
+        },
+      });
+      if (!check) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: `Can't find content with id ${contentId}`,
+        });
+      }
       const material = await Material.create({
         ...body,
         url: file.path,
+        content_id: contentId,
       });
       if (!material) {
         return res.status(500).json({
@@ -42,8 +56,32 @@ module.exports = {
       errorHandler(error, res);
     }
   },
+  getMaterials: async (req, res) => {
+    try {
+      const materials = await Material.findAll({
+        order: [["createdAt", "ASC"]],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+      if (materials.length == 0) {
+        return res.status(404).json({
+          status: "Not Found",
+          messsage: "The data is empty",
+          result: [],
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully retrieve the data",
+        result: materials,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
   updateMaterial: async (req, res) => {
-    const { id } = req.params;
+    const { materialId } = req.query;
     const body = req.body;
     const file = req.file;
     try {
@@ -57,6 +95,7 @@ module.exports = {
         return res.status(400).json({
           status: "Bad Request",
           message: error.message,
+          result: {},
         });
       }
       let update;
@@ -65,7 +104,7 @@ module.exports = {
           { ...body },
           {
             where: {
-              id,
+              id: materialId,
             },
           },
         );
@@ -74,7 +113,7 @@ module.exports = {
           { ...body, url: file.path },
           {
             where: {
-              id,
+              id: materialId,
             },
           },
         );
@@ -88,7 +127,7 @@ module.exports = {
       }
       const material = await Material.findOne({
         where: {
-          id,
+          id: materialId,
         },
       });
       res.status(200).json({
@@ -101,17 +140,17 @@ module.exports = {
     }
   },
   deleteMaterial: async (req, res) => {
-    const { id } = req.params;
+    const { materialId } = req.query;
     try {
       const material = await Material.destroy({
         where: {
-          id,
+          id: materialId,
         },
       });
       if (!material) {
         return res.status(404).json({
           status: "Not Found",
-          message: "Content doesn't exist",
+          message: `Can't find material with id ${materialId}`,
           result: {},
         });
       }

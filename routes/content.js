@@ -10,10 +10,10 @@ const {
 const { isTeacher, isLogin } = require("../middlewares/auth");
 const { uploadCloud } = require("../middlewares/upload-files");
 
-router.post("/", isTeacher, uploadCloud("video", "video"), createContent);
-router.get("/", getContents);
-router.get("/:id", isLogin, getContent);
-router.put("/:id", isTeacher, uploadCloud("video", "video"), updateContent);
-router.delete("/:id", isTeacher, deleteContent);
+router.post("/create", isTeacher, uploadCloud("video", "video"), createContent);
+router.get("/fetch", getContents);
+router.get("/fetch/:contentId", isLogin, getContent);
+router.put("/edit", isTeacher, uploadCloud("video", "video"), updateContent);
+router.delete("/delete", isTeacher, deleteContent);
 
 module.exports = router;

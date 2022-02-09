@@ -1,17 +1,12 @@
 const express = require("express");
 const {
   enrollCourse,
-  getStudent,
-  getPopupContent,
-  getPopupMaterial,
+  getProfile,
 } = require("../controllers/studentController");
 const router = express.Router();
-const { isTeacher, isLogin } = require("../middlewares/auth");
-const { uploadCloud } = require("../middlewares/upload-files");
+const { isLogin } = require("../middlewares/auth");
 
-router.post("/enroll/:id", isLogin, enrollCourse);
-router.get("/profile/:id", isLogin, getStudent);
-router.get("/popup/content/:id", isLogin, getPopupContent);
-router.get("/popup/material/:id", isLogin, getPopupMaterial);
+router.post("/enroll", isLogin, enrollCourse);
+router.get("/profile", isLogin, getProfile);
 
 module.exports = router;
