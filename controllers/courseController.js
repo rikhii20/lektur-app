@@ -1,6 +1,7 @@
 const joi = require("joi");
-const { Course, Content, Material } = require("../models");
+const { Course, Content, Material, User, Category } = require("../models");
 const errorHandler = require("../utils/errorHandler");
+const { Op } = require("sequelize");
 
 const courseController = {
   createCourse: async (req, res) => {
@@ -52,8 +53,184 @@ const courseController = {
     }
   },
   getAllCourses: async (req, res) => {
+    let { category, page, limit, keyword } = req.query;
+
     try {
-      const course = await Course.findAll({
+      let search;
+      if (keyword) {
+        search = {
+          // [Op.or] : [
+          //   {
+          title: {
+            [Op.like]: `%${keyword}%`,
+          },
+          // },
+          // {
+          //   "$by.fullName$" : {
+          //     [Op.like] :`%${keyword}%`
+          //   }
+          //   }
+          // ],
+        };
+      }
+
+      let name;
+      if (keyword) {
+        name = {
+          fullName: {
+            [Op.like]: `%${keyword}%`,
+          },
+        };
+      }
+
+      let cat;
+      if (category) {
+        cat = {
+          name: {
+            [Op.like]: `%${category}%`,
+          },
+        };
+      } else {
+        cat = category;
+      }
+
+      if (!page) {
+        page = 1;
+      }
+
+      let limitation;
+      if (!limit) {
+        limitation = 8;
+      } else {
+        limitation = Number(limit);
+      }
+
+      console.log(search);
+      console.log(cat);
+      console.log(name);
+
+      const courseCheck = await Course.findOne({
+        where: {
+          ...search,
+        },
+      });
+
+      console.log(courseCheck);
+
+      let course;
+      if (courseCheck === null) {
+        course = await Course.findAll({
+          limit: limitation,
+          offset: (page - 1) * limitation,
+
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: Content,
+              as: "content",
+              include: [
+                {
+                  model: Material,
+                  as: "material",
+                  attributes: {
+                    exclude: ["createdAt", "updatedAt"],
+                  },
+                },
+              ],
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+            {
+              model: Category,
+              as: "category",
+              attributes: ["name"],
+              where: {
+                ...cat,
+              },
+            },
+            {
+              model: User,
+              as: "by",
+              attributes: {
+                exclude: ["email", "password", "createdAt", "updatedAt"],
+              },
+              where: {
+                ...name,
+              },
+            },
+          ],
+        });
+      } else {
+        course = await Course.findAll({
+          where: {
+            ...search,
+          },
+          limit: limitation,
+          offset: (page - 1) * limitation,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: Content,
+              as: "content",
+              include: [
+                {
+                  model: Material,
+                  as: "material",
+                  attributes: {
+                    exclude: ["createdAt", "updatedAt"],
+                  },
+                },
+              ],
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+            {
+              model: Category,
+              as: "category",
+              attributes: ["name"],
+              where: {
+                ...cat,
+              },
+            },
+            {
+              model: User,
+              as: "by",
+              attributes: {
+                exclude: ["email", "password", "createdAt", "updatedAt"],
+              },
+            },
+          ],
+        });
+      }
+
+      if (course.length == 0) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: "Database is empty",
+          result: {},
+        });
+      }
+
+      res.status(201).json({
+        status: "success",
+        message: "successfully retrieved course",
+        result: course,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getCourse: async (req, res) => {
+    const { courseId } = req.params;
+    try {
+      const course = await Course.findOne({
+        where: { id: courseId },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -76,33 +253,9 @@ const courseController = {
           },
         ],
       });
-      if (course.length == 0) {
-        return res.status(404).json({
-          status: "Not Found",
-          message: "Database is empty",
-          result: {},
-        });
-      }
-
-      res.status(201).json({
-        status: "success",
-        message: "successfully created course",
-        result: course,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getCourse: async (req, res) => {
-    const { courseId } = req.params;
-    try {
-      const course = await Course.findOne({
-        where: { courseId },
-        include: [{ model: Content }],
-      });
 
       if (!course) {
-        res.status(404).json({
+        return res.status(404).json({
           status: "Not Found",
           message: "Course Not Found",
           result: {},
@@ -111,17 +264,19 @@ const courseController = {
 
       res.status(200).json({
         status: "success",
-        message: "successfully Retrieved course",
+        message: "successfully retrieved course",
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
   updateCourse: async (req, res) => {
     const { courseId: id } = req.params;
     const body = req.body;
     const file = req.file;
+    console.log(file);
+    console.log(body);
     try {
       const schema = joi.object({
         title: joi.string(),
@@ -130,6 +285,7 @@ const courseController = {
         user_id: joi.number(),
         category_id: joi.number(),
       });
+
       const { error } = schema.validate(body);
       if (error) {
         return res.status(400).json({
@@ -200,7 +356,7 @@ const courseController = {
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
   getPopupContent: async (req, res) => {

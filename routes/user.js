@@ -9,6 +9,9 @@ const {
   uploadImage,
   forgotPassword,
   loginGoogle,
+  fetchAccountInfo,
+  deleteImage,
+  changePassword,
 } = require("../controllers/userController");
 const {
   registerSchema,
@@ -26,8 +29,11 @@ router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
-router.post("/profile", isLogin, validate(editProfileSchema), editProfile);
+router.post("/edit", isLogin, validate(editProfileSchema), editProfile);
 router.put("/upload", isLogin, uploadImage);
+router.get("/profile", isLogin, fetchAccountInfo);
+router.delete("/delete-image", isLogin, deleteImage)
+router.put("/change-password", isLogin, changePassword)
 
 router.get(
   "/google",
