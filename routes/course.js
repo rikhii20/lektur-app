@@ -12,17 +12,17 @@ const {
 const { isTeacher, isLogin } = require("../middlewares/auth");
 const { uploadCloud } = require("../middlewares/upload-files");
 
-router.post("/", isTeacher, uploadCloud("image", "image"), createCourse);
-router.get("/", getAllCourses);
-router.get("/:courseId", getCourse);
-router.get("/popup/content/:id", isLogin, getPopupContent);
-router.get("/popup/material/:id", isLogin, getPopupMaterial);
+router.post("/create", isTeacher, uploadCloud("image", "image"), createCourse);
+router.get("/fetch", getAllCourses);
+router.get("/fetch/:courseId", getCourse);
+router.get("/popup/content", isLogin, getPopupContent);
+router.get("/popup/material", isLogin, getPopupMaterial);
 router.put(
-  "/:courseId",
+  "/edit/:courseId",
   isTeacher,
   uploadCloud("image", "image"),
   updateCourse,
 );
-router.delete("/:courseId", deleteCourse);
+router.delete("/delete/:courseId", isTeacher, deleteCourse);
 
 module.exports = router;

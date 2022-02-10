@@ -54,23 +54,13 @@ const courseController = {
   },
   getAllCourses: async (req, res) => {
     let { category, page, limit, keyword } = req.query;
-
     try {
       let search;
       if (keyword) {
         search = {
-          // [Op.or] : [
-          //   {
           title: {
             [Op.like]: `%${keyword}%`,
           },
-          // },
-          // {
-          //   "$by.fullName$" : {
-          //     [Op.like] :`%${keyword}%`
-          //   }
-          //   }
-          // ],
         };
       }
 
@@ -105,26 +95,19 @@ const courseController = {
         limitation = Number(limit);
       }
 
-      console.log(search);
-      console.log(cat);
-      console.log(name);
-
       const courseCheck = await Course.findOne({
         where: {
           ...search,
         },
       });
 
-      console.log(courseCheck);
-
       let course;
       if (courseCheck === null) {
         course = await Course.findAll({
           limit: limitation,
           offset: (page - 1) * limitation,
-
           attributes: {
-            exclude: ["createdAt", "updatedAt"],
+            exclude: ["createdAt", "updatedAt", "category_id"],
           },
           include: [
             {
@@ -171,7 +154,7 @@ const courseController = {
           limit: limitation,
           offset: (page - 1) * limitation,
           attributes: {
-            exclude: ["createdAt", "updatedAt"],
+            exclude: ["createdAt", "updatedAt", "category_id"],
           },
           include: [
             {
@@ -360,7 +343,7 @@ const courseController = {
     }
   },
   getPopupContent: async (req, res) => {
-    let { id } = req.params;
+    let { courseId } = req.query;
     try {
       const student = await Course.findOne({
         attributes: ["title"],
@@ -373,13 +356,13 @@ const courseController = {
           },
         ],
         where: {
-          id,
+          id: courseId,
         },
       });
       if (!student) {
         return res.status(404).json({
           status: "Data Not Found",
-          message: `Can't find a data with id ${id}`,
+          message: `Can't find a data with id ${courseId}`,
           result: {},
         });
       }
@@ -393,7 +376,7 @@ const courseController = {
     }
   },
   getPopupMaterial: async (req, res) => {
-    let { id } = req.params;
+    let { courseId } = req.query;
     try {
       const student = await Course.findOne({
         attributes: ["title"],
@@ -412,13 +395,13 @@ const courseController = {
           },
         ],
         where: {
-          id,
+          id: courseId,
         },
       });
       if (!student) {
         return res.status(404).json({
           status: "Data Not Found",
-          message: `Can't find a data with id ${id}`,
+          message: `Can't find a data with id ${courseId}`,
           result: {},
         });
       }
