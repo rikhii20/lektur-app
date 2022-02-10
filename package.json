@@ -40,12 +40,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.7.3",
     "randomstring": "^1.2.2",
-<<<<<<< HEAD
-    "sequelize": "^6.13.0",
-    "sequelize-cli": "^6.4.1"
-=======
     "sequelize": "^6.15.1"
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

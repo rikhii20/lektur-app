@@ -1,5 +1,5 @@
 const joi = require("joi");
-const { Course, Content, Material, User } = require("../models");
+const { Course, Content, Material, User, Category } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 const { Op } = require("sequelize");
 
@@ -56,48 +56,48 @@ const courseController = {
   getAllCourses: async (req, res) => {
     let { category, page, limit, keyword } = req.query;
     
-<<<<<<< HEAD
 
-=======
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
     try {
 
       let search;
       if (keyword) {
         search = {
-<<<<<<< HEAD
-          [Op.or] : [
-            {
+          // [Op.or] : [
+          //   {
               title : {
-                [Op.iLike] :`%${keyword}%`
+                [Op.like] :`%${keyword}%`
               }
-            },
-            {
-              "$by.fullName$" : {
-                [Op.iLike] :`%${keyword}%`
-              }
-            }
-          ],
-=======
-          title: {
-            [Op.iLike]: `%${keyword}%`,
-          },
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
+            // },
+            // {
+            //   "$by.fullName$" : {
+            //     [Op.like] :`%${keyword}%`
+            //   }
+          //   }
+          // ],
         };
       }
+
+      let name;
+      if(keyword) {
+        name = {
+          fullName : {
+            [Op.like] : `%${keyword}%`,
+          }
+        }
+      }
+
 
       let cat;
       if (category) {
         cat = {
           name: {
-            [Op.iLike]: category,
+            [Op.like]: `%${category}%`,
           },
         };
       } else {
         cat = category;
       }
 
-<<<<<<< HEAD
       if (!page) {
         page = 1;
       }
@@ -108,27 +108,25 @@ const courseController = {
       } else {
         limitation = Number(limit);
       }
-=======
-if (!page) {
-  page = 1;
-}
 
-let limitation;
-if (!limit) {
-  limitation = 8;
-} else {
-  limitation = Number(limit);
-}
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
+      console.log(search);
+      console.log(cat);
+      console.log(name);
 
-      const course = await Course.findAll({
+      const courseCheck = await Course.findOne({
+        where: {
+          ...search
+        }
+      })
+
+      console.log(courseCheck);
+
+      let course;
+      if(courseCheck === null){
+      course = await Course.findAll({
         limit: limitation,
         offset: (page - 1) * limitation,
-<<<<<<< HEAD
 
-=======
-        order: [["createdAt", "DESC"]],
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -145,23 +143,78 @@ if (!limit) {
                 },
               },
             ],
-            where: {
-              ...search
-            },
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
           },
           {
+            model: Category,
+            as: "category",
+            attributes: ["name"],
+            where: {
+              ...cat
+            }
+          },
+          {
             model : User,
             as : "by",
+            attributes: {
+              exclude: ["email", "password", "createdAt", "updatedAt"],
+            },
+            where: {
+              ...name
+            }
           }
         ],
-        where: {
-          ...search
-        },
 
       });
+
+    } else {
+      course = await Course.findAll({
+        where: {
+          ...search,
+        },
+        limit: limitation,
+        offset: (page - 1) * limitation,
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Content,
+            as: "content",
+            include: [
+              {
+                model: Material,
+                as: "material",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+            ],
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+          {
+            model: Category,
+            as: "category",
+            attributes: ["name"],
+            where: {
+              ...cat
+            }
+          },
+          {
+            model : User,
+            as : "by",
+            attributes: {
+              exclude: ["email", "password", "createdAt", "updatedAt"],
+            },
+          }
+        ],
+
+      });
+    }
 
       if (course.length == 0) {
         return res.status(404).json({
@@ -173,7 +226,7 @@ if (!limit) {
 
       res.status(201).json({
         status: "success",
-        message: "successfully created course",
+        message: "successfully retrieved course",
         result: course,
       });
     } catch (error) {
@@ -184,7 +237,7 @@ if (!limit) {
     const { courseId } = req.params;
     try {
       const course = await Course.findOne({
-        where: { courseId },
+        where: { id : courseId },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -206,14 +259,11 @@ if (!limit) {
             },
           },
         ],
-<<<<<<< HEAD
 
-=======
->>>>>>> 559c87341a04ebc6a2a9b6b2d197e508a4523179
       });
 
       if (!course) {
-        res.status(404).json({
+        return res.status(404).json({
           status: "Not Found",
           message: "Course Not Found",
           result: {},
@@ -222,18 +272,19 @@ if (!limit) {
 
       res.status(200).json({
         status: "success",
-        message: "successfully Retrieved course",
+        message: "successfully retrieved course",
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
-  
   updateCourse: async (req, res) => {
     const body = req.body;
     const { courseId } = req.params;
     const file = req.file;
+    console.log(file)
+    console.log(body)
     try {
       const schema = joi.object({
         title: joi.string(),
@@ -243,26 +294,33 @@ if (!limit) {
         category_id: joi.number(),
       });
 
-      const { error } = schema.validate(body, { image: file.path });
+      const { error } = schema.validate(body);
       if (error) {
-        res.status(400).json({
+        return res.status(400).json({
           status: "Bad Request",
           message: error.message,
           result: {},
         });
       }
 
-      if (req.file) {
-        body.image = req.file.path;
+      let checkUpdate;
+      if (file) {
+        checkUpdate = await Course.update({...body, image: file.path}, {
+          where: {
+            id: courseId,
+          },
+        });
+        console.log(checkUpdate)
+      } else {
+        checkUpdate = await Course.update({...body}, {
+          where: {
+            id: courseId,
+          },
+        });
       }
 
-      const checkUpdate = await Course.update(body, {
-        where: {
-          id: courseId,
-        },
-        plain: true,
-      });
-
+      console.log(checkUpdate)
+      
       if (checkUpdate[0] != 1) {
         return res.status(500).json({
           status: "Internal Server Error",
@@ -271,14 +329,18 @@ if (!limit) {
         });
       }
 
-      const updatedCourse = await Course.findByPk(courseId);
+      const updatedCourse = await Course.findOne({
+        where: {
+          id: courseId
+        }
+      });
       res.status(201).json({
         status: "success",
         message: "successfully updated course",
         result: updatedCourse,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
   deleteCourse: async (req, res) => {
@@ -302,7 +364,7 @@ if (!limit) {
         result: course,
       });
     } catch (error) {
-      errorHandler(res, error);
+      errorHandler(error, res);
     }
   },
 };
