@@ -30,7 +30,7 @@ router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
-router.post("/edit", isLogin, validate(editProfileSchema), editProfile);
+router.put("/edit", isLogin, validate(editProfileSchema), editProfile);
 router.put("/upload", isLogin, uploadImage);
 router.get("/profile", isLogin, fetchAccountInfo);
 router.delete("/delete-image", isLogin, deleteImage)
