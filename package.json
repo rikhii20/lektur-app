@@ -1,0 +1,49 @@
+{
+  "name": "be_lektur",
+  "version": "1.0.0",
+  "description": "create platform online course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "heroku-release": "sequelize db:migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/binarxglints_batch16/finalproject/lektur/be_lektur.git"
+  },
+  "keywords": [],
+  "author": "Team Lektur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/binarxglints_batch16/finalproject/lektur/be_lektur/issues"
+  },
+  "homepage": "https://gitlab.com/binarxglints_batch16/finalproject/lektur/be_lektur#readme",
+  "dependencies": {
+    "@hapi/joi-date": "^2.0.1",
+    "@joi/date": "^2.1.0",
+    "bcrypt": "^5.0.1",
+    "cloudinary": "^1.28.1",
+    "cors": "^2.8.5",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
+    "joi": "^17.6.0",
+    "joi-date-extensions": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "multer-storage-cloudinary": "^4.0.0",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.2",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.7.3",
+    "randomstring": "^1.2.2",
+    "sequelize": "^6.15.1",
+    "sequelize-cli": "^6.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
