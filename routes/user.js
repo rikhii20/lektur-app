@@ -12,6 +12,7 @@ const {
   fetchAccountInfo,
   deleteImage,
   changePassword,
+  loginFacebook,
 } = require("../controllers/userController");
 const {
   registerSchema,
@@ -50,6 +51,20 @@ router.get(
     session: false,
   }),
   loginGoogle
+);
+
+router.get(
+  "/facebook",
+  passport.authenticate("facebook")
+);
+
+router.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  loginFacebook
 );
 
 module.exports = router;

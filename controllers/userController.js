@@ -249,6 +249,24 @@ module.exports = {
       errorHandler(error, res)
     }
   },
+  loginFacebook : async (req, res) => {
+    try {
+      let payload = {
+        id : req.user.id,
+        email : req.user.email
+      };
+      const token = jwt.sign(payload, process.env.SECRET_TOKEN)
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully logged in",
+        result: {
+          token,
+        },
+      });
+    } catch (error){
+      errorHandler(error, res)
+    }
+  },
   fetchAccountInfo: async (req, res) => {
     try {
       const data = await User.findByPk(req.user.id, {
