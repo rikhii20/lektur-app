@@ -1,7 +1,15 @@
 const joi = require("joi");
-const { Course, Content, Material, User, Category } = require("../models");
+const {
+  Course,
+  Content,
+  Material,
+  User,
+  Category,
+  StudentCourse,
+} = require("../models");
 const errorHandler = require("../utils/errorHandler");
 const { Op } = require("sequelize");
+const { Sequelize } = require("sequelize");
 
 const courseController = {
   createCourse: async (req, res) => {
@@ -409,6 +417,42 @@ const courseController = {
         status: "Success",
         message: "Successfully restieve the data",
         result: student,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getTeacherDashboard: async (req, res) => {
+    const { user } = req;
+    try {
+      const teacher = await Course.findAll({
+        where: {
+          user_id: user.id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "category_id"],
+        },
+        include: [
+          {
+            model: StudentCourse,
+            as: "enrolledStudent",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "course_id"],
+            },
+          },
+        ],
+      });
+      if (teacher.length == 0) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: "You haven't create course",
+          result: {},
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully retrieve the data",
+        result: teacher,
       });
     } catch (error) {
       errorHandler(error, res);

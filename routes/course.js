@@ -6,8 +6,6 @@ const {
   getCourse,
   updateCourse,
   deleteCourse,
-  getPopupContent,
-  getPopupMaterial,
 } = require("../controllers/courseController");
 const { isTeacher, isLogin } = require("../middlewares/auth");
 const { uploadCloud } = require("../middlewares/upload-files");
@@ -15,8 +13,6 @@ const { uploadCloud } = require("../middlewares/upload-files");
 router.post("/create", isTeacher, uploadCloud("image", "image"), createCourse);
 router.get("/fetch", getAllCourses);
 router.get("/fetch/:courseId", getCourse);
-router.get("/popup/content", isLogin, getPopupContent);
-router.get("/popup/material", isLogin, getPopupMaterial);
 router.put(
   "/edit/:courseId",
   isTeacher,

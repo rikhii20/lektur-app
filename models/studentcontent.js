@@ -9,13 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      StudentContent.belongsTo(models.Content, {
+        as: "contents",
+        foreignKey: "content_id",
+      });
     }
   }
   StudentContent.init(
     {
-      content_id: DataTypes.INTEGER,
       student_id: DataTypes.INTEGER,
-      status: DataTypes.BOOLEAN,
+      course_id: DataTypes.INTEGER,
+      content_id: DataTypes.INTEGER,
     },
     {
       sequelize,

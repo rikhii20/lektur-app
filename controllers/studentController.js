@@ -32,6 +32,7 @@ module.exports = {
       const existStudent = await StudentCourse.findOne({
         where: {
           course_id: courseId,
+          student_id: user.id,
         },
       });
       if (existStudent) {
@@ -73,12 +74,74 @@ module.exports = {
       errorHandler(error, res);
     }
   },
-  getProfile: async (req, res) => {
-    const { studentId } = req.query;
+  approvedCourse: async (req, res) => {
+    const { courseId, studentId } = req.query;
+    try {
+      const schema = Joi.object({
+        student_id: Joi.number(),
+        course_id: Joi.number(),
+      });
+      const { error } = schema.validate({
+        student_id: studentId,
+        course_id: courseId,
+      });
+      if (error) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: error.message,
+          result: {},
+        });
+      }
+      const check = await StudentCourse.findOne({
+        where: {
+          course_id: courseId,
+          student_id: studentId,
+        },
+      });
+      if (!check) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: "student haven't registered for course",
+          result: {},
+        });
+      }
+      const update = await StudentCourse.update(
+        { status: 1 },
+        {
+          where: {
+            course_id: courseId,
+            student_id: studentId,
+          },
+        },
+      );
+      if (update[0] != 1) {
+        return res.status(500).json({
+          status: "Internal server error",
+          message: "Failed update the data / data not found",
+          result: {},
+        });
+      }
+      const approved = await StudentCourse.findOne({
+        where: {
+          course_id: courseId,
+          student_id: studentId,
+        },
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "successfuly approved the student course",
+        result: approved,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getStudentDashboard: async (req, res) => {
+    const { user } = req;
     try {
       const student = await StudentCourse.findAll({
         where: {
-          student_id: studentId,
+          student_id: user.id,
         },
         attributes: {
           exclude: ["createdAt", "updatedAt", "course_id", "student_id"],

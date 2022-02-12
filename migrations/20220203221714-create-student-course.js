@@ -8,19 +8,19 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      course_id: {
+      student_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Courses",
+          model: "Users",
           key: "id",
         },
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      student_id: {
+      course_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Users",
+          model: "Courses",
           key: "id",
         },
         onDelete: "cascade",

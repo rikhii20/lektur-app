@@ -8,15 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      content_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Contents",
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      },
       student_id: {
         type: Sequelize.INTEGER,
         references: {
@@ -26,8 +17,23 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      status: {
-        type: Sequelize.BOOLEAN,
+      course_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Courses",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+      content_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Contents",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       createdAt: {
         allowNull: false,
