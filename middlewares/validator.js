@@ -1,9 +1,9 @@
 const errorHandler = require("../utils/errorHandler")
 
 module.exports.validate = (schema) => {
-    return async (req, res, next) => {
+    return (req, res, next) => {
       try {
-        const body = await req.body;
+        const body = req.body;
         const { error } = schema.validate(body);
         if (error)
           return res.status(400).json({
