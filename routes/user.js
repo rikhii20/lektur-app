@@ -1,11 +1,70 @@
 const express = require("express");
-const { register, login } = require("../controllers/user");
-const { registerSchema, loginSchema } = require("../helpers/joi-schema");
-const { validate } = require("../middlewares/validator");
 const router = express.Router();
 
+const {
+  register,
+  login,
+  resetPassword,
+  editProfile,
+  uploadImage,
+  forgotPassword,
+  loginGoogle,
+  fetchAccountInfo,
+  deleteImage,
+  changePassword,
+  loginFacebook,
+} = require("../controllers/userController");
+const {
+  registerSchema,
+  loginSchema,
+  resetPasswordSchema,
+  editProfileSchema,
+} = require("../helpers/joi-schema");
+const { validate } = require("../middlewares/validator");
+const { isLogin } = require("../middlewares/auth");
 
-router.post("/register", validate(registerSchema) ,register);
+const passport = require("passport");
+require("../helpers/passport");
+
+router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
+router.put("/edit", isLogin, validate(editProfileSchema), editProfile);
+router.put("/upload", isLogin, uploadImage);
+router.get("/profile", isLogin, fetchAccountInfo);
+router.delete("/delete-image", isLogin, deleteImage)
+router.put("/change-password", isLogin, changePassword)
+
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  loginGoogle
+);
+
+router.get(
+  "/facebook",
+  passport.authenticate("facebook")
+);
+
+router.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  loginFacebook
+);
 
 module.exports = router;
