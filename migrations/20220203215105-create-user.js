@@ -1,30 +1,29 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Questions", {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      description: {
-        type: Sequelize.TEXT,
-      },
-      correctAnswer: {
+      fullName: {
         type: Sequelize.STRING,
       },
-      remark: {
+      email: {
         type: Sequelize.STRING,
       },
-      course_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Courses",
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
+      password: {
+        type: Sequelize.STRING,
+      },
+      image: {
+        type: Sequelize.STRING,
+        defaultValue:
+          "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png",
+      },
+      role: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -34,13 +33,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      completedAt: {
-        allowNull: false,
+      deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Questions");
+    await queryInterface.dropTable("Users");
   },
 };
