@@ -11,7 +11,7 @@ const {
   enrollCourse,
   approvedCourse,
   getStudentDashboard,
-} = require("../controllers/studentController");
+} = require("../controllers/studentCourseController");
 const router = express.Router();
 const { isLogin, isTeacher } = require("../middlewares/auth");
 

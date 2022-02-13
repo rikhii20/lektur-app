@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const errorHandler = require("../utils/errorHandler");
-const { StudentContent, Content, StudentCourse } = require("../models");
+const { StudentContent, Content, StudentCourse, Course } = require("../models");
 
 module.exports = {
   createStudentProgress: async (req, res) => {
@@ -51,12 +51,19 @@ module.exports = {
         },
       });
       if (!checkUser) {
-        return res.status(404).json({
+        return res.status(400).json({
           status: "Bad Request",
           message: `User haven't enroll the course`,
           result: {},
         });
+      } else if (checkUser.status == 0) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: `Waiting approval`,
+          result: {},
+        });
       }
+
       const checkStatus = await StudentContent.findOne({
         where: {
           course_id: courseId,
@@ -64,12 +71,13 @@ module.exports = {
         },
       });
       if (checkStatus) {
-        return res.status(500).json({
-          status: "Internal Server Error",
+        return res.status(400).json({
+          status: "Bad Request",
           message: `You have open this content`,
           result: {},
         });
       }
+
       const progress = await StudentContent.create({
         student_id: user.id,
         course_id: courseId,
@@ -83,32 +91,7 @@ module.exports = {
           result: {},
         });
       }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully create the data",
-        result: progress,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getStudentProgress: async (req, res) => {
-    const { user } = req;
-    const { courseId } = req.query;
-    try {
-      const status = await StudentCourse.findOne({
-        where: {
-          course_id: courseId,
-        },
-        attributes: ["status"],
-      });
-      if (status.status == 0) {
-        return res.status(401).json({
-          status: "Unauthorized",
-          messsage: "Waiting approval",
-          result: [],
-        });
-      }
+
       const unlockedContent = await StudentContent.findAndCountAll({
         where: {
           student_id: user.id,
@@ -134,13 +117,108 @@ module.exports = {
         });
       }
 
+      let updateStatus;
+      if (unlockedContent.count < contents.count) {
+        updateStatus = await StudentCourse.update(
+          { status: 2 },
+          {
+            where: {
+              student_id: user.id,
+              course_id: courseId,
+            },
+          },
+        );
+      } else if ((unlockedContent.count = contents.count)) {
+        updateStatus = await StudentCourse.update(
+          { status: 3 },
+          {
+            where: {
+              student_id: user.id,
+              course_id: courseId,
+            },
+          },
+        );
+      }
+
+      if (!updateStatus) {
+        return res.status(400).json({
+          status: "Failed",
+          message: "Failed to update the data",
+          result: {},
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully create the data",
+        result: progress,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getStudentProgress: async (req, res) => {
+    const { user } = req;
+    const { courseId } = req.query;
+    try {
+      const courseStatus = await StudentCourse.findOne({
+        where: {
+          course_id: courseId,
+        },
+        attributes: ["status"],
+      });
+      if (courseStatus == null) {
+        return res.status(404).json({
+          status: "Not Found",
+          messsage: "Course id not found",
+          result: {},
+        });
+      }
+      if (courseStatus.status == 0) {
+        return res.status(401).json({
+          status: "Unauthorized",
+          messsage: "Waiting approval",
+          result: {},
+        });
+      }
+
+      const unlockedContent = await StudentContent.findAndCountAll({
+        where: {
+          student_id: user.id,
+          course_id: courseId,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "content_id"],
+        },
+        include: [
+          {
+            model: Content,
+            as: "content",
+            attributes: ["title"],
+          },
+        ],
+      });
+      const contents = await Content.findAndCountAll({
+        where: {
+          course_id: courseId,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+      if (unlockedContent.count == 0) {
+        return res.status(404).json({
+          status: "Not Found",
+          messsage: "The data is empty",
+          result: [],
+        });
+      }
       res.status(200).json({
         status: "Success",
         message: "Successfully retrieve the data",
         result: {
           unlockedContent,
           contents,
-          status,
+          courseStatus,
         },
       });
     } catch (error) {
