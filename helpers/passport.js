@@ -9,7 +9,7 @@ passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID_GOOGLE,
-      clientSecret: process.env.CLIENT_SERVER_GOOGLE,
+      clientSecret: process.env.CLIENT_SECRET_GOOGLE,
       callbackURL: `${baseUrl}/api/v1/user/google/callback`,
     },
     async function (accessToken, refreshToken, profile, cb) {
@@ -27,7 +27,7 @@ passport.use(
   new FacebookStrategy(
     {
       clientID: process.env.CLIENT_ID_FB,
-      clientSecret: process.env.CLIENT_SERVER_FB,
+      clientSecret: process.env.CLIENT_SECRET_FB,
       callbackURL: `${baseUrl}/api/v1/user/facebook/callback`,
     },
     async function (accessToken, refreshToken, profile, cb) {
