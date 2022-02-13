@@ -387,7 +387,7 @@ const courseController = {
     let { courseId } = req.query;
     try {
       const student = await Course.findOne({
-        attributes: ["title"],
+        attributes: ["id"],
         include: [
           {
             model: Content,
