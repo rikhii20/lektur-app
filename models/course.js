@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         as: "enrolledStudent",
         foreignKey: "course_id",
       });
+      Course.hasOne(models.StudentCourse, {
+        as: "status",
+        foreignKey: "course_id",
+      });
+      Course.hasMany(models.StudentContent, {
+        as: "progress",
+        foreignKey: "course_id",
+      });
     }
   }
   Course.init(

@@ -160,67 +160,39 @@ module.exports = {
     const { user } = req;
     const { courseId } = req.query;
     try {
-      const courseStatus = await StudentCourse.findOne({
-        where: {
-          course_id: courseId,
-        },
-        attributes: ["status"],
-      });
-      if (courseStatus == null) {
-        return res.status(404).json({
-          status: "Not Found",
-          messsage: "Course id not found",
-          result: {},
-        });
-      }
-      if (courseStatus.status == 0) {
-        return res.status(401).json({
-          status: "Unauthorized",
-          messsage: "Waiting approval",
-          result: {},
-        });
-      }
-
-      const unlockedContent = await StudentContent.findAndCountAll({
+      let studentContent = await StudentContent.findAll({
         where: {
           student_id: user.id,
-          course_id: courseId,
         },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "content_id"],
+        group: "StudentContent.course_id",
+      });
+      const courseIds = studentContent.map((e) => e.course_id);
+      const courses = await Course.findAll({
+        where: {
+          id: courseIds,
         },
         include: [
           {
             model: Content,
             as: "content",
-            attributes: ["title"],
+          },
+          {
+            model: StudentContent,
+            as: "progress",
+            where: {
+              student_id: user.id,
+            },
+          },
+          {
+            model: StudentCourse,
+            as: "status",
+            where: {
+              student_id: user.id,
+            },
           },
         ],
       });
-      const contents = await Content.findAndCountAll({
-        where: {
-          course_id: courseId,
-        },
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
-      });
-      if (unlockedContent.count == 0) {
-        return res.status(404).json({
-          status: "Not Found",
-          messsage: "The data is empty",
-          result: [],
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully retrieve the data",
-        result: {
-          unlockedContent,
-          contents,
-          courseStatus,
-        },
-      });
+      return res.send(courses);
     } catch (error) {
       errorHandler(error, res);
     }
