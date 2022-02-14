@@ -20,6 +20,9 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      value: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

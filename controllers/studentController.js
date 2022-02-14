@@ -67,7 +67,7 @@ module.exports = {
       });
       if (!enroll) {
         return res.status(400).json({
-          status: "Failed",
+          status: "Failed", 
           message: "Failed to enroll the course",
           result: {},
         });

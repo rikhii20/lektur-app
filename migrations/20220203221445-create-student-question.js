@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      description: {
-        type: Sequelize.TEXT,
-      },
       student_id: {
         type: Sequelize.INTEGER,
         references: {
@@ -29,8 +26,15 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      status: {
-        type: Sequelize.STRING,
+      course_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Courses",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+
       },
       createdAt: {
         allowNull: false,
