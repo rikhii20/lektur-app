@@ -12,13 +12,8 @@ const { uploadCloud } = require("../middlewares/upload-files");
 
 router.post("/create", isTeacher, uploadCloud("image", "image"), createCourse);
 router.get("/fetch", getAllCourses);
-router.get("/fetch/:courseId", getCourse);
-router.put(
-  "/edit/:courseId",
-  isTeacher,
-  uploadCloud("image", "image"),
-  updateCourse,
-);
-router.delete("/delete/:courseId", isTeacher, deleteCourse);
+router.get("/fetch/detail", getCourse);
+router.put("/edit", isTeacher, uploadCloud("image", "image"), updateCourse);
+router.delete("/delete", isTeacher, deleteCourse);
 
 module.exports = router;

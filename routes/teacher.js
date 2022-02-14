@@ -1,6 +1,8 @@
 const express = require("express");
-const { getTeacherDashboard } = require("../controllers/courseController");
-const { approvedCourse } = require("../controllers/studentCourseController");
+const {
+  getTeacherDashboard,
+  approvedCourse,
+} = require("../controllers/teacherController");
 const router = express.Router();
 const { isTeacher } = require("../middlewares/auth");
 

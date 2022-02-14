@@ -93,7 +93,7 @@ module.exports = {
     }
   },
   getContent: async (req, res) => {
-    const { contentId } = req.params;
+    const { contentId } = req.query;
     try {
       const content = await Content.findOne({
         where: {

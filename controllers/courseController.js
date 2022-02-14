@@ -218,7 +218,7 @@ const courseController = {
     }
   },
   getCourse: async (req, res) => {
-    const { courseId } = req.params;
+    const { courseId } = req.query;
     try {
       const course = await Course.findOne({
         where: { id: courseId },
@@ -263,7 +263,7 @@ const courseController = {
     }
   },
   updateCourse: async (req, res) => {
-    const { courseId: id } = req.params;
+    const { courseId: id } = req.query;
     const body = req.body;
     const file = req.file;
     console.log(file);
@@ -327,7 +327,7 @@ const courseController = {
     }
   },
   deleteCourse: async (req, res) => {
-    const { courseId } = req.params;
+    const { courseId } = req.query;
     try {
       const course = await Course.destroy({
         where: { id: courseId },
@@ -345,114 +345,6 @@ const courseController = {
         status: "success",
         message: "successfully deleted course",
         result: course,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getPopupContent: async (req, res) => {
-    let { courseId } = req.query;
-    try {
-      const student = await Course.findOne({
-        attributes: ["title"],
-        order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
-        include: [
-          {
-            model: Content,
-            as: "content",
-            attributes: ["title"],
-          },
-        ],
-        where: {
-          id: courseId,
-        },
-      });
-      if (!student) {
-        return res.status(404).json({
-          status: "Data Not Found",
-          message: `Can't find a data with id ${courseId}`,
-          result: {},
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully restieve the data",
-        result: student,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getPopupMaterial: async (req, res) => {
-    let { courseId } = req.query;
-    try {
-      const student = await Course.findOne({
-        attributes: ["id"],
-        include: [
-          {
-            model: Content,
-            as: "content",
-            attributes: ["title"],
-            include: [
-              {
-                model: Material,
-                as: "material",
-                attributes: ["name"],
-              },
-            ],
-          },
-        ],
-        where: {
-          id: courseId,
-        },
-      });
-      if (!student) {
-        return res.status(404).json({
-          status: "Data Not Found",
-          message: `Can't find a data with id ${courseId}`,
-          result: {},
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully restieve the data",
-        result: student,
-      });
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  },
-  getTeacherDashboard: async (req, res) => {
-    const { user } = req;
-    try {
-      const teacher = await Course.findAll({
-        where: {
-          user_id: user.id,
-        },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "category_id"],
-        },
-        include: [
-          {
-            model: StudentCourse,
-            as: "enrolledStudent",
-            attributes: {
-              exclude: ["createdAt", "updatedAt", "course_id"],
-            },
-          },
-        ],
-      });
-      if (teacher.length == 0) {
-        return res.status(404).json({
-          status: "Not Found",
-          message: "You haven't create course",
-          result: {},
-        });
-      }
-      res.status(200).json({
-        status: "Success",
-        message: "Successfully retrieve the data",
-        result: teacher,
       });
     } catch (error) {
       errorHandler(error, res);

@@ -12,7 +12,7 @@ const { uploadCloud } = require("../middlewares/upload-files");
 
 router.post("/create", isTeacher, uploadCloud("video", "video"), createContent);
 router.get("/fetch", getContents);
-router.get("/fetch/:contentId", isLogin, getContent);
+router.get("/fetch/detail", isLogin, getContent);
 router.put("/edit", isTeacher, uploadCloud("video", "video"), updateContent);
 router.delete("/delete", isTeacher, deleteContent);
 
