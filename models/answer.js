@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       description: DataTypes.TEXT,
       question_id: DataTypes.INTEGER,
+      value: DataTypes.INTEGER,
     },
     {
       sequelize,
