@@ -10,7 +10,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID_GOOGLE,
       clientSecret: process.env.CLIENT_SECRET_GOOGLE,
-      callbackURL: `${baseUrl}/api/v1/user/google/callback`,
+      callbackURL: process.env.GOOGLE_CALLBACK_URI,
     },
     async function (accessToken, refreshToken, profile, cb) {
       const user = await User.findOrCreate({
@@ -28,11 +28,13 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID_FB,
       clientSecret: process.env.CLIENT_SECRET_FB,
-      callbackURL: `${baseUrl}/api/v1/user/facebook/callback`,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URI,
+      profileFields: ["id", "displayName", "email"],
     },
     async function (accessToken, refreshToken, profile, cb) {
+        console.log(profile);
       const user = await User.findOrCreate({
-        where: { email: profile.emails[0].value },
+        where: { email: profile.emails[0].value},
         defaults: { fullName: profile.displayName },
       });
       cb(null, user);
