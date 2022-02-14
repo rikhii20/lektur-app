@@ -67,7 +67,7 @@ module.exports = {
       });
       if (!enroll) {
         return res.status(400).json({
-          status: "Failed", 
+          status: "Failed",
           message: "Failed to enroll the course",
           result: {},
         });
@@ -101,6 +101,51 @@ module.exports = {
             model: StudentCourse,
             as: "courses",
             attributes: ["id", "status"],
+            include: [
+              {
+                model: Course,
+                as: "course",
+                attributes: ["id", "title", "image"],
+                include: [
+                  {
+                    model: User,
+                    as: "by",
+                    attributes: ["id", "fullName"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully retrieve the data",
+        result: student,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getStudentAssessments: async (req, res) => {
+    const { user } = req;
+    try {
+      let studentCourse = await StudentCourse.findAll({
+        where: {
+          student_id: user.id,
+        },
+        group: "StudentCourse.student_id",
+      });
+      const studentIds = studentCourse.map((e) => e.student_id);
+      const student = await User.findAll({
+        where: {
+          id: studentIds,
+        },
+        attributes: ["fullName", "email", "image"],
+        include: [
+          {
+            model: StudentQuestion,
+            as: "question",
             include: [
               {
                 model: Course,
