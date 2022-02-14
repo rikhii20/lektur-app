@@ -158,7 +158,6 @@ module.exports = {
   },
   getStudentProgress: async (req, res) => {
     const { user } = req;
-    const { courseId } = req.query;
     try {
       let studentContent = await StudentContent.findAll({
         where: {
