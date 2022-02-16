@@ -117,15 +117,14 @@ const courseController = {
           attributes: {
             exclude: ["createdAt", "updatedAt", "category_id"],
           },
-          order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
           include: [
             {
               model: Content,
-              as: "content",
+              as: "contents",
               include: [
                 {
                   model: Material,
-                  as: "material",
+                  as: "materials",
                   attributes: {
                     exclude: ["createdAt", "updatedAt"],
                   },
@@ -165,16 +164,15 @@ const courseController = {
           attributes: {
             exclude: ["createdAt", "updatedAt", "category_id"],
           },
-          order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
           include: [
             {
               model: Content,
-              as: "content",
+              as: "contents",
               order: [["createdAt", "ASC"]],
               include: [
                 {
                   model: Material,
-                  as: "material",
+                  as: "materials",
                   attributes: {
                     exclude: ["createdAt", "updatedAt"],
                   },
@@ -231,11 +229,11 @@ const courseController = {
         include: [
           {
             model: Content,
-            as: "content",
+            as: "contents",
             include: [
               {
                 model: Material,
-                as: "material",
+                as: "materials",
                 attributes: {
                   exclude: ["createdAt", "updatedAt"],
                 },
