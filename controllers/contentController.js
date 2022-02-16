@@ -66,7 +66,7 @@ module.exports = {
         include: [
           {
             model: Material,
-            as: "material",
+            as: "materials",
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
@@ -105,7 +105,7 @@ module.exports = {
         include: [
           {
             model: Material,
-            as: "material",
+            as: "materials",
             attributes: ["name", "url"],
           },
         ],
