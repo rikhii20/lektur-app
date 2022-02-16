@@ -10,7 +10,7 @@ const AssessmentController = {
         description: joi.string().required(),
         remark: joi.string().required(),
         correctAnswer: joi.string().required(),
-        course_id: Joi.number().required(),
+        course_id: joi.number().required(),
       });
       const { error } = schema.validate({
         ...body,

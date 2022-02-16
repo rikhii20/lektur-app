@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "category_id",
       });
       Course.hasMany(models.Content, {
-        as: "content",
+        as: "contents",
         foreignKey: "course_id",
       });
       Course.hasMany(models.Question, {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "course_id",
       });
       Course.hasMany(models.StudentCourse, {
-        as: "enrolledStudent",
+        as: "enrolledStudents",
         foreignKey: "course_id",
       });
       Course.hasOne(models.StudentCourse, {

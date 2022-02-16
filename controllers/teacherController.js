@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const errorHandler = require("../utils/errorHandler");
-const { Content, StudentCourse, Course } = require("../models");
+const { Content, StudentCourse, Course, Material } = require("../models");
+const { Sequelize } = require("sequelize");
 
 module.exports = {
   approvedCourse: async (req, res) => {
@@ -65,7 +66,7 @@ module.exports = {
       errorHandler(error, res);
     }
   },
-  getTeacherDashboard: async (req, res) => {
+  getTeacherCourses: async (req, res) => {
     const { user } = req;
     try {
       const teacher = await Course.findAll({
@@ -75,8 +76,24 @@ module.exports = {
         attributes: ["id", "title", "image"],
         include: [
           {
+            model: Content,
+            as: "contents",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "course_id"],
+            },
+            include: [
+              {
+                model: Material,
+                as: "materials",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt", "content_id"],
+                },
+              },
+            ],
+          },
+          {
             model: StudentCourse,
-            as: "enrolledStudent",
+            as: "enrolledStudents",
             attributes: {
               exclude: ["createdAt", "updatedAt", "course_id"],
             },

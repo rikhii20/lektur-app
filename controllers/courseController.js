@@ -117,6 +117,7 @@ const courseController = {
           attributes: {
             exclude: ["createdAt", "updatedAt", "category_id"],
           },
+          order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
           include: [
             {
               model: Content,
@@ -164,10 +165,12 @@ const courseController = {
           attributes: {
             exclude: ["createdAt", "updatedAt", "category_id"],
           },
+          order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
           include: [
             {
               model: Content,
               as: "content",
+              order: [["createdAt", "ASC"]],
               include: [
                 {
                   model: Material,
