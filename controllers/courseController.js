@@ -84,7 +84,7 @@ const courseController = {
       if (category) {
         cat = {
           name: {
-            [Op.like]: `%${category}%`,
+            [Op.iLike]: `%${category}%`,
           },
         };
       } else {
