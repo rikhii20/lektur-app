@@ -9,7 +9,6 @@ const {
 } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 const { Op } = require("sequelize");
-const { Sequelize } = require("sequelize");
 
 const courseController = {
   createCourse: async (req, res) => {
@@ -67,7 +66,7 @@ const courseController = {
       if (keyword) {
         search = {
           title: {
-            [Op.like]: `%${keyword}%`,
+            [Op.iLike]: `%${keyword}%`,
           },
         };
       }
@@ -76,7 +75,7 @@ const courseController = {
       if (keyword) {
         name = {
           fullName: {
-            [Op.like]: `%${keyword}%`,
+            [Op.iLike]: `%${keyword}%`,
           },
         };
       }
