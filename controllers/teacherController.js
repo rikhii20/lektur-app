@@ -1,6 +1,7 @@
 const Joi = require("joi");
+const { Op } = require("sequelize")
 const errorHandler = require("../utils/errorHandler");
-const { Content, StudentCourse, Course, Material } = require("../models");
+const { Content, StudentCourse, Course, Material, User } = require("../models");
 const { Sequelize } = require("sequelize");
 
 module.exports = {
@@ -116,4 +117,40 @@ module.exports = {
       errorHandler(error, res);
     }
   },
+  getStudents : async (req, res) => {
+    try {
+      const { courseId} = req.query;
+      const students =  await StudentCourse.findAll({
+        where: {
+          course_id : courseId,
+        },
+        order: 
+        [
+          ["status", 'DESC'],
+        ],
+        attributes : ["id", "status", "assessmentScore"],
+        include : [
+          {
+            model : User,
+          as : "student",
+          attributes : ["fullName", "id"]
+          },
+        ]
+      })
+      if (students.length == 0) {
+        return res.status(404).json({
+          status: "Bad Request",
+          message: "No Students Enrolled",
+          result: [],
+        });
+      }
+      res.status(200).json({
+        status : "Success",
+        message : "Successfully retrieve the data",
+        result : students,
+      });
+    } catch (error) {
+      errorHandler(error, res)
+    }
+  }
 };
