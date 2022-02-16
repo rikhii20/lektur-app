@@ -181,11 +181,10 @@ module.exports = {
           id: courseId,
         },
         attributes: ["title"],
-        order: [[{ model: Content, as: "content" }, "createdAt", "ASC"]],
         include: [
           {
             model: Content,
-            as: "content",
+            as: "contents",
             attributes: ["id", "title"],
             order: [["createdAt", "ASC"]],
           },
@@ -239,12 +238,12 @@ module.exports = {
         include: [
           {
             model: Content,
-            as: "content",
+            as: "contents",
             attributes: ["title"],
             include: [
               {
                 model: Material,
-                as: "material",
+                as: "materials",
                 attributes: ["name"],
               },
             ],
@@ -335,6 +334,7 @@ module.exports = {
         where: {
           course_id: courseId,
           content_id: contentId,
+          student_id: user.id,
         },
       });
       if (checkStatus) {
@@ -448,7 +448,7 @@ module.exports = {
           },
           {
             model: Content,
-            as: "content",
+            as: "contents",
             attributes: ["id", "title"],
             order: [["createdAt", "ASC"]],
           },
@@ -489,7 +489,7 @@ module.exports = {
       if (courses.length == 0) {
         return res.status(404).json({
           status: "Not Found",
-          message: "The data is empty",
+          message: "Can't find student progress / progress is null",
           result: [],
         });
       }

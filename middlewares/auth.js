@@ -56,6 +56,7 @@ module.exports = {
         return res.status(401).json({
           status: "Unauthorized",
           message: "User not found",
+          result: {},
         });
       }
       if (user.role != "teacher") {

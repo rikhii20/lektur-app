@@ -1,8 +1,13 @@
 const Joi = require("joi");
-const { Op } = require("sequelize")
 const errorHandler = require("../utils/errorHandler");
-const { Content, StudentCourse, Course, Material, User } = require("../models");
-const { Sequelize } = require("sequelize");
+const {
+  Content,
+  StudentCourse,
+  StudentContent,
+  Course,
+  Material,
+  User,
+} = require("../models");
 
 module.exports = {
   approvedCourse: async (req, res) => {
@@ -117,27 +122,60 @@ module.exports = {
       errorHandler(error, res);
     }
   },
-  getStudents : async (req, res) => {
+  getStudents: async (req, res) => {
+    const { courseId } = req.query;
     try {
-      const { courseId} = req.query;
-      const students =  await StudentCourse.findAll({
+      const courses = await Course.findAll({
         where: {
-          course_id : courseId,
+          id: courseId,
+          user_id: req.user.id,
         },
-        order: 
-        [
-          ["status", 'DESC'],
-        ],
-        attributes : ["id", "status", "assessmentScore"],
-        include : [
+        attributes: ["id"],
+        include: [
           {
-            model : User,
-          as : "student",
-          attributes : ["fullName", "id"]
+            model: StudentCourse,
+            as: "enrolledStudents",
+            attributes: ["id", "status", "assessmentScore"],
+            include: [
+              {
+                model: User,
+                as: "students",
+                attributes: ["id", "fullName"],
+                include: [
+                  {
+                    model: StudentContent,
+                    as: "progress",
+                    where: {
+                      course_id: courseId,
+                    },
+                    attributes: ["course_id"],
+                    include: [
+                      {
+                        model: Content,
+                        as: "content",
+                        attributes: ["id", "title"],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                model: Course,
+                as: "course",
+                attributes: ["id"],
+                include: [
+                  {
+                    model: Content,
+                    as: "contents",
+                    attributes: ["id", "title"],
+                  },
+                ],
+              },
+            ],
           },
-        ]
-      })
-      if (students.length == 0) {
+        ],
+      });
+      if (courses.length == 0) {
         return res.status(404).json({
           status: "Bad Request",
           message: "No Students Enrolled",
@@ -145,12 +183,12 @@ module.exports = {
         });
       }
       res.status(200).json({
-        status : "Success",
-        message : "Successfully retrieve the data",
-        result : students,
+        status: "Success",
+        message: "Successfully retrieve the data",
+        result: courses,
       });
     } catch (error) {
-      errorHandler(error, res)
+      errorHandler(error, res);
     }
-  }
+  },
 };
