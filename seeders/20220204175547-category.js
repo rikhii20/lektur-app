@@ -6,7 +6,17 @@ module.exports = {
       "Categories",
       [
         {
-          name: "Photography",
+          name: "Development",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Business",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Finance",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -16,17 +26,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          name: "Development",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
           name: "Marketing",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name: "Business",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -37,6 +37,11 @@ module.exports = {
         },
         {
           name: "Music",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Photography",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
