@@ -30,7 +30,7 @@ module.exports = {
         onUpdate: "cascade",
       },
       isApproved: {
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

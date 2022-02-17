@@ -33,15 +33,15 @@ router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
 router.put("/edit", isLogin, validate(editProfileSchema), editProfile);
 router.put("/upload", isLogin, uploadImage);
 router.get("/profile", isLogin, fetchAccountInfo);
-router.delete("/delete-image", isLogin, deleteImage)
-router.put("/change-password", isLogin, changePassword)
+router.delete("/delete-image", isLogin, deleteImage);
+router.put("/change-password", isLogin, changePassword);
 
 router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
-  })
+  }),
 );
 
 router.get(
@@ -50,15 +50,15 @@ router.get(
     failureRedirect: "/login",
     session: false,
   }),
-  loginGoogle
+  loginGoogle,
 );
 
 router.get(
   "/facebook",
   passport.authenticate("facebook", {
-    scope : ["public_profile", "email"],
-    session : false
-  }) 
+    scope: ["public_profile", "email"],
+    session: false,
+  }),
 );
 
 router.get(
@@ -67,7 +67,7 @@ router.get(
     failureRedirect: "/login",
     session: false,
   }),
-  loginFacebook
+  loginFacebook,
 );
 
 module.exports = router;

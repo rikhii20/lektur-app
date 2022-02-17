@@ -7,7 +7,9 @@ const {
   Course,
   Material,
   User,
+  Invitation,
 } = require("../models");
+const sendMail = require("../utils/sendMail");
 
 module.exports = {
   approvedCourse: async (req, res) => {
@@ -179,6 +181,60 @@ module.exports = {
         status: "Success",
         message: "Successfully retrieve the data",
         result: courses,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  createInvitation: async (req, res) => {
+    const { email } = req.body;
+    const { user } = req;
+    const { courseId } = req.query;
+    try {
+      const student = await User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      let invite;
+      if (!student) {
+        invite = await Invitation.create({
+          studentEmail: email,
+          teacher_id: user.id,
+          course_id: courseId,
+          isApproved: false,
+        });
+        sendMail(
+          email,
+          "Course Invitation",
+          `
+          <h1>You've been invited to join the course</h1>
+          <p> click link below to enroll the course</p>
+          <a href="https://lektur-app-glints16.herokuapp.com/register">Click Here</a>
+          `,
+        );
+      } else {
+        invite = await Invitation.create({
+          studentEmail: email,
+          teacher_id: user.id,
+          course_id: courseId,
+          isApproved: false,
+        });
+        sendMail(
+          email,
+          "Course Invitation",
+          `
+          <h1>You've been invited to join the course</h1>
+          <p> click link below to enroll the course</p>
+          <a href="https://lektur-app-glints16.herokuapp.com/detail">Click Here</a>
+          `,
+        );
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Successfully sent the invitation email",
+        result: invite,
       });
     } catch (error) {
       errorHandler(error, res);
