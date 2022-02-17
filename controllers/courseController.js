@@ -111,10 +111,11 @@ const courseController = {
       let course;
       if (courseCheck === null) {
         course = await Course.findAll({
+          order: [["createdAt", "ASC"]],
           limit: limitation,
           offset: (page - 1) * limitation,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "category_id"],
+            exclude: ["updatedAt", "category_id"],
           },
           include: [
             {
@@ -158,10 +159,11 @@ const courseController = {
           where: {
             ...search,
           },
+          order: [["createdAt", "ASC"]],
           limit: limitation,
           offset: (page - 1) * limitation,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "category_id"],
+            exclude: ["updatedAt", "category_id"],
           },
           include: [
             {
