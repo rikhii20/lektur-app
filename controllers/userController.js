@@ -301,17 +301,34 @@ module.exports = {
   },
   uploadImage: async (req, res) => {
     try {
-      const path = await req.file;
-      await User.update(
+      const file  = req.file;
+
+      const user = await User.update(
         {
-          image: path,
+          image: file.path,
         },
         { where: { id: req.user.id } }
       );
+      if (user[0] != 1) {
+        return res.status(500).json({
+          status : "Internal server error",
+          message : "Failed update the data",
+          result : {},
+        })
+      }
+      const check = await User.findOne({
+        where : {
+          id : req.user.id
+        },
+        attributes : {
+          exclude : ["updatedAt", "createdAt" , "password"]
+        }
+      })
+
       res.status(200).json({
         status: "Success",
         message: "Profile photo updated",
-        result: path,
+        result: check
       });
     } catch (error) {
       errorHandler(error, res);

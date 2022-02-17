@@ -24,6 +24,7 @@ const { validate } = require("../middlewares/validator");
 const { isLogin } = require("../middlewares/auth");
 
 const passport = require("passport");
+const { uploadCloud } = require("../middlewares/upload-files");
 require("../helpers/passport");
 
 router.post("/register", validate(registerSchema), register);
@@ -31,7 +32,7 @@ router.post("/login", validate(loginSchema), login);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
 router.put("/edit", isLogin, validate(editProfileSchema), editProfile);
-router.put("/upload", isLogin, uploadImage);
+router.put("/upload", isLogin, uploadCloud("image", "image") ,uploadImage);
 router.get("/profile", isLogin, fetchAccountInfo);
 router.delete("/delete-image", isLogin, deleteImage)
 router.put("/change-password", isLogin, changePassword)
