@@ -123,19 +123,33 @@ module.exports = {
     }
   },
   getStudents: async (req, res) => {
-    const { courseId } = req.query;
+    const { courseId, sort } = req.query;
+
+    let order;
+      switch (sort) {
+        case "status":
+          order = [["enrolledStudents", "status", "DESC"]];
+          break;
+        case "score":
+          order = [["enrolledStudents", "assessmentScore", "DESC"]];
+          break;
+        default:
+          order = [["createdAt", "ASC"]];
+      }
+
     try {
       const courses = await Course.findAll({
         where: {
           id: courseId,
           user_id: req.user.id,
         },
-        attributes: ["id", "title", "description"],
+        order : order,          
         include: [
           {
             model: StudentCourse,
             as: "enrolledStudents",
             attributes: ["id", "status", "assessmentScore"],
+            
             include: [
               {
                 model: User,
@@ -167,6 +181,7 @@ module.exports = {
             attributes: ["id", "title"],
           },
         ],
+        attributes: ["id", "title", "description"],
       });
       if (courses.length == 0) {
         return res.status(404).json({
