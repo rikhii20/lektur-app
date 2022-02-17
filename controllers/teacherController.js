@@ -130,7 +130,7 @@ module.exports = {
           id: courseId,
           user_id: req.user.id,
         },
-        attributes: ["id"],
+        attributes: ["id", "title", "description"],
         include: [
           {
             model: StudentCourse,
@@ -159,19 +159,12 @@ module.exports = {
                   },
                 ],
               },
-              {
-                model: Course,
-                as: "course",
-                attributes: ["id"],
-                include: [
-                  {
-                    model: Content,
-                    as: "contents",
-                    attributes: ["id", "title"],
-                  },
-                ],
-              },
             ],
+          },
+          {
+            model: Content,
+            as: "contents",
+            attributes: ["id", "title"],
           },
         ],
       });
