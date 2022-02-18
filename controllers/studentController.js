@@ -194,6 +194,7 @@ module.exports = {
             where: {
               student_id: user.id,
             },
+            required: false,
             include: [
               {
                 model: Content,
@@ -426,13 +427,12 @@ module.exports = {
   getStudentProgress: async (req, res) => {
     const { user } = req;
     try {
-      let studentContent = await StudentContent.findAll({
+      let studentCourse = await StudentCourse.findAll({
         where: {
           student_id: user.id,
         },
-        group: "StudentContent.course_id",
       });
-      const courseIds = studentContent.map((e) => e.course_id);
+      const courseIds = studentCourse.map((e) => e.course_id);
       const courses = await Course.findAll({
         where: {
           id: courseIds,
@@ -455,6 +455,7 @@ module.exports = {
           {
             model: StudentContent,
             as: "progress",
+            required: false,
             where: {
               student_id: user.id,
             },
