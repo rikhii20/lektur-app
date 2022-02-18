@@ -32,7 +32,7 @@ const courseController = {
       if (error) {
         res.status(400).json({
           status: "Bad Request",
-          message: message.error,
+          message: error.message,
           result: {},
         });
       }
