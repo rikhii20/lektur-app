@@ -211,21 +211,6 @@ module.exports = {
           email,
         },
       });
-      const course = await Course.findAll({
-        where: {
-          user_id: user.id,
-          id: courseId,
-        },
-      });
-      if (!course) {
-        return res.status(404).json({
-          status: "Internal Server Error",
-          message: "You don't have course with id",
-          id,
-          result: [],
-        });
-      }
-
       let invite;
       if (!student) {
         invite = await Invitation.create({
