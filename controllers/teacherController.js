@@ -128,16 +128,16 @@ module.exports = {
     const { courseId, sort } = req.query;
 
     let order;
-      switch (sort) {
-        case "status":
-          order = [["enrolledStudents", "status", "DESC"]];
-          break;
-        case "score":
-          order = [["enrolledStudents", "assessmentScore", "DESC"]];
-          break;
-        default:
-          order = [["createdAt", "ASC"]];
-      }
+    switch (sort) {
+      case "status":
+        order = [["enrolledStudents", "status", "DESC"]];
+        break;
+      case "score":
+        order = [["enrolledStudents", "assessmentScore", "DESC"]];
+        break;
+      default:
+        order = [["createdAt", "ASC"]];
+    }
 
     try {
       const courses = await Course.findAll({
@@ -145,13 +145,13 @@ module.exports = {
           id: courseId,
           user_id: req.user.id,
         },
-        order : order,          
+        order: order,
         include: [
           {
             model: StudentCourse,
             as: "enrolledStudents",
             attributes: ["id", "status", "assessmentScore"],
-            
+
             include: [
               {
                 model: User,
@@ -211,6 +211,20 @@ module.exports = {
           email,
         },
       });
+      const course = await Course.findAll({
+        where: {
+          user_id: user.id,
+          id: courseId,
+        },
+      });
+      if (!course) {
+        return res.status(404).json({
+          status: "Internal Server Error",
+          message: "You don't have course with id",
+          id,
+          result: [],
+        });
+      }
 
       let invite;
       if (!student) {
