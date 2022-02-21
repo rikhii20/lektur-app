@@ -83,6 +83,7 @@ module.exports = {
           user_id: user.id,
         },
         attributes: ["id", "title", "image"],
+        order: [["contents", "createdAt", "ASC"]],
         include: [
           {
             model: Content,
