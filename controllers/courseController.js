@@ -244,6 +244,16 @@ const courseController = {
               exclude: ["createdAt", "updatedAt"],
             },
           },
+          {
+            model: Category,
+            as: "category",
+            attributes: ["name"],
+          },
+          {
+            model: User,
+            as: "by",
+            attributes: ["fullName", "email", "image", "role"],
+          },
         ],
       });
 
