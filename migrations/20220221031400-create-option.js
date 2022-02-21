@@ -1,15 +1,12 @@
 "use strict";
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Answers", {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("Options", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-      },
-      description: {
-        type: Sequelize.TEXT,
       },
       question_id: {
         type: Sequelize.INTEGER,
@@ -20,8 +17,12 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      value: {
-        type: Sequelize.INTEGER,
+      option: {
+        type: Sequelize.STRING,
+      },
+      isTrue: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
@@ -33,7 +34,7 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Answers");
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("Options");
   },
 };

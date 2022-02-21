@@ -17,10 +17,10 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      question_id: {
+      assessment_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Questions",
+          model: "Assessments",
           key: "id",
         },
         onDelete: "cascade",
@@ -34,7 +34,6 @@ module.exports = {
         },
         onDelete: "cascade",
         onUpdate: "cascade",
-
       },
       createdAt: {
         allowNull: false,
