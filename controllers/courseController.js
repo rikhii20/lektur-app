@@ -227,6 +227,7 @@ const courseController = {
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
+        order: [["contents", "id", "ASC"]],
         include: [
           {
             model: Content,
