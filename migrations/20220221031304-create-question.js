@@ -1,6 +1,6 @@
 "use strict";
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Questions", {
       id: {
         allowNull: false,
@@ -8,23 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      description: {
-        type: Sequelize.TEXT,
-      },
-      correctAnswer: {
-        type: Sequelize.STRING,
-      },
-      remark: {
-        type: Sequelize.STRING,
-      },
-      course_id: {
+      assessment_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Courses",
+          model: "Assessments",
           key: "id",
         },
         onDelete: "cascade",
         onUpdate: "cascade",
+      },
+      question: {
+        type: Sequelize.STRING,
+      },
+      remarks: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -34,13 +31,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      completedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
     });
   },
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("Questions");
   },
 };

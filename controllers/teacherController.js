@@ -10,6 +10,7 @@ const {
   Invitation,
 } = require("../models");
 const sendMail = require("../utils/sendMail");
+const { Op } = require("sequelize");
 
 module.exports = {
   approvedCourse: async (req, res) => {
@@ -125,21 +126,39 @@ module.exports = {
     }
   },
   getStudents: async (req, res) => {
-    const { courseId, sort } = req.query;
-
-    let order;
-    switch (sort) {
-      case "status":
-        order = [["enrolledStudents", "status", "DESC"]];
-        break;
-      case "score":
-        order = [["enrolledStudents", "assessmentScore", "DESC"]];
-        break;
-      default:
-        order = [["createdAt", "ASC"]];
-    }
-
+    const { courseId, sort, keyword, status } = req.query;
     try {
+      let order;
+      switch (sort) {
+        case "status":
+          order = [["enrolledStudents", "status", "DESC"]];
+          break;
+        case "score":
+          order = [["enrolledStudents", "assessmentScore", "DESC"]];
+          break;
+        case "name":
+          order = [["enrolledStudents", "students", "fullName", "ASC"]];
+          break;
+        default:
+          order = [["createdAt", "ASC"]];
+      }
+
+      let search;
+      if (keyword) {
+        search = {
+          fullName: {
+            [Op.iLike]: `%${keyword}%`,
+          },
+        };
+      }
+
+      let progress;
+      if (status) {
+        progress = {
+          status: status,
+        };
+      }
+
       const courses = await Course.findAll({
         where: {
           id: courseId,
@@ -150,13 +169,18 @@ module.exports = {
           {
             model: StudentCourse,
             as: "enrolledStudents",
+            where: {
+              ...progress,
+            },
             attributes: ["id", "status", "assessmentScore"],
-
             include: [
               {
                 model: User,
                 as: "students",
-                attributes: ["id", "fullName"],
+                where: {
+                  ...search,
+                },
+                attributes: ["id", "fullName", "email", "image"],
                 include: [
                   {
                     model: StudentContent,
@@ -164,12 +188,14 @@ module.exports = {
                     where: {
                       course_id: courseId,
                     },
+                    required: false,
                     attributes: ["course_id"],
                     include: [
                       {
                         model: Content,
                         as: "content",
                         attributes: ["id", "title"],
+                        required: false,
                       },
                     ],
                   },
@@ -183,12 +209,12 @@ module.exports = {
             attributes: ["id", "title"],
           },
         ],
-        attributes: ["id", "title", "description"],
+        attributes: ["id", "title", "description", "image", "description"],
       });
       if (courses.length == 0) {
         return res.status(404).json({
           status: "Bad Request",
-          message: "No Students Enrolled",
+          message: "Data not found",
           result: [],
         });
       }
