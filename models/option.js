@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Option.belongsTo(models.Question, {
+        as: "options",
+        foreignKey: "question_id"
+      })
     }
   };
   Option.init({
