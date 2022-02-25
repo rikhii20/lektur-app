@@ -201,7 +201,6 @@ const courseController = {
           ],
         });
       }
-
       if (course.length == 0) {
         return res.status(404).json({
           status: "Not Found",
@@ -209,8 +208,7 @@ const courseController = {
           result: {},
         });
       }
-
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         message: "successfully retrieved course",
         result: course,
@@ -268,8 +266,6 @@ const courseController = {
     const { courseId: id } = req.query;
     const body = req.body;
     const file = req.file;
-    console.log(file);
-    console.log(body);
     try {
       const schema = joi.object({
         title: joi.string(),
@@ -278,12 +274,12 @@ const courseController = {
         user_id: joi.number(),
         category_id: joi.number(),
       });
-
       const { error } = schema.validate(body);
       if (error) {
         return res.status(400).json({
           status: "Bad Request",
           message: error.message,
+          result: {},
         });
       }
       let update;
@@ -306,7 +302,6 @@ const courseController = {
           },
         );
       }
-
       if (update[0] != 1) {
         return res.status(500).json({
           status: "Internal server error",
@@ -344,7 +339,7 @@ const courseController = {
       }
 
       res.status(200).json({
-        status: "success",
+        status: "Success",
         message: "successfully deleted course",
         result: course,
       });

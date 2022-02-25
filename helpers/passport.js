@@ -8,8 +8,9 @@ passport.use(
   "google",
   new GoogleStrategy(
     {
-      clientID: process.env.CLIENT_ID_GOOGLE,
-      clientSecret: process.env.CLIENT_SECRET_GOOGLE,
+      clientID:
+        "750121174033-dr287087lrjri680f2jqrkef9mtdt0vd.apps.googleusercontent.com",
+      clientSecret: "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",
       callbackURL: process.env.GOOGLE_CALLBACK_URI,
     },
     async function (accessToken, refreshToken, profile, cb) {
@@ -26,15 +27,15 @@ passport.use(
   "facebook",
   new FacebookStrategy(
     {
-      clientID: process.env.CLIENT_ID_FB,
-      clientSecret: process.env.CLIENT_SECRET_FB,
+      clientID: "996627281269216",
+      clientSecret: "95872e1ed9765c80f8083e746d474b08",
       callbackURL: process.env.FACEBOOK_CALLBACK_URI,
       profileFields: ["id", "displayName", "email"],
     },
     async function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
+      console.log(profile);
       const user = await User.findOrCreate({
-        where: { email: profile.emails[0].value},
+        where: { email: profile.emails[0].value },
         defaults: { fullName: profile.displayName },
       });
       cb(null, user);
