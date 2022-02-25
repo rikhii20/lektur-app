@@ -7,12 +7,12 @@ const {
   updateContent,
   deleteContent,
 } = require("../controllers/contentController");
-const { isTeacher, isLogin } = require("../middlewares/auth");
+const { isTeacher } = require("../middlewares/auth");
 const { uploadCloud } = require("../middlewares/upload-files");
 
 router.post("/create", isTeacher, uploadCloud("video", "video"), createContent);
 router.get("/fetch", getContents);
-router.get("/fetch/detail", isLogin, getContent);
+router.get("/fetch/detail", getContent);
 router.put("/edit", isTeacher, uploadCloud("video", "video"), updateContent);
 router.delete("/delete", isTeacher, deleteContent);
 

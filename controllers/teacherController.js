@@ -127,7 +127,7 @@ module.exports = {
     }
   },
   getStudents: async (req, res) => {
-    const { courseId, sort, keyword, status } = req.query;
+    let { courseId, sort, keyword, status } = req.query;
     try {
       let order;
       switch (sort) {

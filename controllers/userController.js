@@ -3,20 +3,18 @@ const { User, ForgotPassword } = require("../models");
 const bcrypt = require("bcrypt");
 const errorHandler = require("../utils/errorHandler");
 const randomstring = require("randomstring");
-const sendMail = require("../utils/sendMail")
-const cloudinary = require("cloudinary")
+const sendMail = require("../utils/sendMail");
+const cloudinary = require("cloudinary");
 
 module.exports = {
   register: async (req, res) => {
-    const {fullName, email, role, password} = req.body;
+    const { fullName, email, role, password } = req.body;
     try {
       if (role == "student") {
         const check = await User.findOne({
-          where:
-          { 
-            email, 
-          }
-          
+          where: {
+            email,
+          },
         });
         if (check) {
           return res.status(400).json({
@@ -31,14 +29,14 @@ module.exports = {
           email: email,
           password: hashedPassword,
           role: role,
-        }); 
+        });
         const token = jwt.sign(
           {
             id: user.id,
             email: user.email,
           },
           process.env.SECRET_TOKEN,
-          { expiresIn: "24h" }
+          { expiresIn: "24h" },
         );
         sendMail(
           email,
@@ -91,7 +89,7 @@ module.exports = {
             email: user.email,
           },
           process.env.SECRET_TOKEN,
-          { expiresIn: "24h" }
+          { expiresIn: "24h" },
         );
         sendMail(
           email,
@@ -134,13 +132,14 @@ module.exports = {
     try {
       const user = await User.findOne({
         where: {
-          email : email.trim().toLowerCase(),
+          email: email.trim().toLowerCase(),
         },
       });
       if (!user) {
         return res.status(401).json({
           status: "Unauthorized",
           message: "Invalid email and password combination",
+          result: {},
         });
       }
       const valid = await bcrypt.compare(password, user.password);
@@ -157,7 +156,7 @@ module.exports = {
           id: user.id,
         },
         process.env.SECRET_TOKEN,
-        { expiresIn: "24h" }
+        { expiresIn: "24h" },
       );
 
       res.status(200).json({
@@ -188,12 +187,11 @@ module.exports = {
       });
       if (!user) {
         return res.status(404).json({
-          status: "bad request",
+          status: "Not Found",
           message: "email not found",
           result: {},
         });
       }
-
       const passwordReset = await ForgotPassword.create({
         email,
         validationCode: randomstring.generate(50),
@@ -204,7 +202,7 @@ module.exports = {
         "Password Reset",
         `<h1>Password Reset Confirmation</h1>
         <a href="https://localhost:5000/api/v1/user/forgot?code=${passwordReset.validationCode}">Click Here</a>
-        `
+        `,
       );
       res.status(200).json({
         status: "Success",
@@ -235,7 +233,7 @@ module.exports = {
 
       await User.update(
         { password: hashPassword },
-        { where: { email: validate.email } }
+        { where: { email: validate.email } },
       );
       await ForgotPassword.update(
         { isDone: true },
@@ -243,7 +241,7 @@ module.exports = {
           where: {
             validationCode,
           },
-        }
+        },
       );
 
       res.status(200).json({
@@ -255,13 +253,13 @@ module.exports = {
       errorHandler(error, res);
     }
   },
-  loginGoogle : async (req, res) => {
+  loginGoogle: async (req, res) => {
     try {
       let payload = {
-        id : req.user.id,
-        email : req.user.email
+        id: req.user.id,
+        email: req.user.email,
       };
-      const token = jwt.sign(payload, process.env.SECRET_TOKEN)
+      const token = jwt.sign(payload, process.env.SECRET_TOKEN);
       res.status(200).json({
         status: "Success",
         message: "Successfully logged in",
@@ -269,17 +267,17 @@ module.exports = {
           token,
         },
       });
-    } catch (error){
-      errorHandler(error, res)
+    } catch (error) {
+      errorHandler(error, res);
     }
   },
-  loginFacebook : async (req, res) => {
+  loginFacebook: async (req, res) => {
     try {
       let payload = {
-        id : req.user.id,
-        email : req.user.email
+        id: req.user.id,
+        email: req.user.email,
       };
-      const token = jwt.sign(payload, process.env.SECRET_TOKEN)
+      const token = jwt.sign(payload, process.env.SECRET_TOKEN);
       res.status(200).json({
         status: "Success",
         message: "Successfully logged in",
@@ -287,8 +285,8 @@ module.exports = {
           token,
         },
       });
-    } catch (error){
-      errorHandler(error, res)
+    } catch (error) {
+      errorHandler(error, res);
     }
   },
   fetchAccountInfo: async (req, res) => {
@@ -307,17 +305,31 @@ module.exports = {
   },
   editProfile: async (req, res) => {
     try {
-      const { fullName, email } = await req.body;
-      await User.update(
+      const { fullName, email } = req.body;
+      const update = await User.update(
         {
-          fullName : fullName,
+          fullName: fullName,
           email: email,
         },
-        { where: { id: req.user.id } }
-      ); 
+        { where: { id: req.user.id } },
+      );
+      if (update[0] != 1) {
+        return res.status(500).json({
+          status: "Internal server error",
+          message: "Failed update the data / data not found",
+          result: {},
+        });
+      }
+      const check = await User.findOne({
+        where: {
+          id: req.user.id,
+        },
+        attributes: ["id", "fullName", "email", "image", "role"],
+      });
       res.status(200).json({
         status: "Success",
         message: "Profile updated",
+        result: check,
       });
     } catch (error) {
       errorHandler(error, res);
@@ -325,34 +337,32 @@ module.exports = {
   },
   uploadImage: async (req, res) => {
     try {
-      const file  = req.file;
-
+      const file = req.file;
       const user = await User.update(
         {
           image: file.path,
         },
-        { where: { id: req.user.id } }
+        { where: { id: req.user.id } },
       );
       if (user[0] != 1) {
         return res.status(500).json({
-          status : "Internal server error",
-          message : "Failed update the data",
-          result : {},
-        })
+          status: "Internal server error",
+          message: "Failed update the data",
+          result: {},
+        });
       }
       const check = await User.findOne({
-        where : {
-          id : req.user.id
+        where: {
+          id: req.user.id,
         },
-        attributes : {
-          exclude : ["updatedAt", "createdAt" , "password"]
-        }
-      })
-
+        attributes: {
+          exclude: ["updatedAt", "createdAt", "password"],
+        },
+      });
       res.status(200).json({
         status: "Success",
         message: "Profile photo updated",
-        result: check
+        result: check,
       });
     } catch (error) {
       errorHandler(error, res);
@@ -360,19 +370,22 @@ module.exports = {
   },
   deleteImage: async (req, res) => {
     try {
-      const { image } = await User.findByPk(req.user.id)
-      const public_id = await image.substr(60)
-      console.log(public_id)
-      await cloudinary.v2.api.delete_resources(public_id); 
-
-      User.update({
-        image: "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png"
-      }, {
-        where: { id: req.user.id }
-      })
+      const { image } = await User.findByPk(req.user.id);
+      const public_id = await image.substr(60);
+      await cloudinary.v2.api.delete_resources(public_id);
+      User.update(
+        {
+          image:
+            "https://res.cloudinary.com/ddvobptro/image/upload/v1642494701/siluet_wni7t4.png",
+        },
+        {
+          where: { id: req.user.id },
+        },
+      );
       res.status(200).json({
         status: "Success",
         message: "image deleted",
+        result: {},
       });
     } catch (error) {
       errorHandler(error, res);
@@ -389,8 +402,9 @@ module.exports = {
         return res.status(500).json({
           status: "failed",
           message: "Password did not match",
+          result: {},
         });
-      await User.update(
+      const updated = await User.update(
         {
           password: bcrypt.hashSync(newPassword, 10),
         },
@@ -398,14 +412,15 @@ module.exports = {
           where: {
             id: req.user.id,
           },
-        }
+        },
       );
       res.status(200).json({
         status: "Success",
         message: "Password updated",
+        result: updated,
       });
     } catch (error) {
       errorHandler(error, res);
     }
   },
-}
+};

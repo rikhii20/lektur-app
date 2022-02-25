@@ -7,7 +7,7 @@ const {
   updateCourse,
   deleteCourse,
 } = require("../controllers/courseController");
-const { isTeacher, isLogin } = require("../middlewares/auth");
+const { isTeacher } = require("../middlewares/auth");
 const { uploadCloud } = require("../middlewares/upload-files");
 
 router.post("/create", isTeacher, uploadCloud("image", "image"), createCourse);
