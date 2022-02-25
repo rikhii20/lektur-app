@@ -3,18 +3,20 @@ const { User, ForgotPassword } = require("../models");
 const bcrypt = require("bcrypt");
 const errorHandler = require("../utils/errorHandler");
 const randomstring = require("randomstring");
-const sendMail = require("../middlewares/send-mail");
+const sendMail = require("../utils/sendMail")
 const cloudinary = require("cloudinary")
 
 module.exports = {
   register: async (req, res) => {
-    const body = req.body;
+    const {fullName, email, role, password} = req.body;
     try {
-      if (body.role == "student") {
+      if (role == "student") {
         const check = await User.findOne({
-          where: {
-            email: body.email,
-          },
+          where:
+          { 
+            email, 
+          }
+          
         });
         if (check) {
           return res.status(400).json({
@@ -23,13 +25,13 @@ module.exports = {
             result: {},
           });
         }
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
-          fullName: body.fullName,
-          email: body.email,
+          fullName: fullName,
+          email: email,
           password: hashedPassword,
-          role: body.role,
-        });
+          role: role,
+        }); 
         const token = jwt.sign(
           {
             id: user.id,
@@ -37,6 +39,17 @@ module.exports = {
           },
           process.env.SECRET_TOKEN,
           { expiresIn: "24h" }
+        );
+        sendMail(
+          email,
+          "Register Successfully",
+          `
+          <h1> Wellcome To Lektur </h1>
+          <p> hi student </p>
+          <p> click link below to login </p>
+          <a href="https://lektur-app-glints16.herokuapp.com/login">Login</a>
+          <p> Thank you for being a part of lektur </p>
+          `,
         );
         res.status(200).json({
           status: "Success",
@@ -52,10 +65,10 @@ module.exports = {
             },
           },
         });
-      } else if (body.role == "teacher") {
+      } else if (role == "teacher") {
         const check = await User.findOne({
           where: {
-            email: body.email,
+            email: email,
           },
         });
         if (check) {
@@ -65,12 +78,12 @@ module.exports = {
             result: {},
           });
         }
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
-          fullName: body.fullName,
-          email: body.email,
+          fullName: fullName,
+          email: email,
           password: hashedPassword,
-          role: body.role,
+          role: role,
         });
         const token = jwt.sign(
           {
@@ -79,6 +92,17 @@ module.exports = {
           },
           process.env.SECRET_TOKEN,
           { expiresIn: "24h" }
+        );
+        sendMail(
+          email,
+          "Register Successfully",
+          `
+          <h1> Wellcome To Lektur </h1>
+          <p> hi teacher </p>
+          <p> click link below to login </p>
+          <a href="https://lektur-app-glints16.herokuapp.com/login">Login</a>
+          <p> Thank you for being a part of lektur </p>
+          `,
         );
         res.status(200).json({
           status: "Success",
