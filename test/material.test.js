@@ -1,8 +1,23 @@
-jest.setTimeout(30000);
+jest.setTimeout(50000);
 const app = require("../app");
 const supertest = require("supertest");
-const { Course } = require("../models");
+const { Course, Content } = require("../models");
 let id;
+
+afterAll(async () => {
+  Course.destroy({
+    where: {
+      title: "belajar teross",
+    },
+  });
+});
+afterAll(async () => {
+  Content.destroy({
+    where: {
+      title: "lesson 1",
+    },
+  });
+});
 
 test("POST api/v1/material/create", async () => {
   const user = {

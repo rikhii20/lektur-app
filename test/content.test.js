@@ -1,4 +1,4 @@
-jest.setTimeout(30000);
+jest.setTimeout(50000);
 const app = require("../app");
 const supertest = require("supertest");
 const { Course } = require("../models");

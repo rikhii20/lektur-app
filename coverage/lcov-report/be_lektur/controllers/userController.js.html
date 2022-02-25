@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.76% </span>
+                <span class="strong">56.6% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>58/104</span>
+                <span class='fraction'>60/106</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.76% </span>
+                <span class="strong">56.6% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>58/104</span>
+                <span class='fraction'>60/106</span>
             </div>
         
             
@@ -467,7 +467,29 @@
 <a name='L402'></a><a href='#L402'>402</a>
 <a name='L403'></a><a href='#L403'>403</a>
 <a name='L404'></a><a href='#L404'>404</a>
-<a name='L405'></a><a href='#L405'>405</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
+<a name='L405'></a><a href='#L405'>405</a>
+<a name='L406'></a><a href='#L406'>406</a>
+<a name='L407'></a><a href='#L407'>407</a>
+<a name='L408'></a><a href='#L408'>408</a>
+<a name='L409'></a><a href='#L409'>409</a>
+<a name='L410'></a><a href='#L410'>410</a>
+<a name='L411'></a><a href='#L411'>411</a>
+<a name='L412'></a><a href='#L412'>412</a>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a>
+<a name='L426'></a><a href='#L426'>426</a>
+<a name='L427'></a><a href='#L427'>427</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -500,6 +522,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -542,6 +575,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -876,17 +920,17 @@ const { User, ForgotPassword } = require("../models");
 const bcrypt = require("bcrypt");
 const errorHandler = require("../utils/errorHandler");
 const randomstring = require("randomstring");
-const sendMail = require("../middlewares/send-mail");
+const sendMail = require("../utils/sendMail");
 const cloudinary = require("cloudinary");
 &nbsp;
 module.exports = {
   register: async (req, res) =&gt; {
-    const body = req.body;
+    const { fullName, email, role, password } = req.body;
     try {
-      if (body.role == "student") {
+      if (role == "student") {
         const check = await User.findOne({
           where: {
-            email: body.email,
+            email,
           },
         });
         if (check) {
@@ -896,12 +940,12 @@ module.exports = {
             result: {},
           });
         }
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
-          fullName: body.fullName,
-          email: body.email,
+          fullName: fullName,
+          email: email,
           password: hashedPassword,
-          role: body.role,
+          role: role,
         });
         const token = jwt.sign(
           {
@@ -910,6 +954,17 @@ module.exports = {
           },
           process.env.SECRET_TOKEN,
           { expiresIn: "24h" },
+        );
+        sendMail(
+          email,
+          "Register Successfully",
+          `
+          &lt;h1&gt; Wellcome To Lektur &lt;/h1&gt;
+          &lt;p&gt; hi student &lt;/p&gt;
+          &lt;p&gt; click link below to login &lt;/p&gt;
+          &lt;a href="https://lektur-app-glints16.herokuapp.com/login"&gt;Login&lt;/a&gt;
+          &lt;p&gt; Thank you for being a part of lektur &lt;/p&gt;
+          `,
         );
         res.status(201).json({
           status: "Success",
@@ -925,10 +980,10 @@ module.exports = {
             },
           },
         });
-      } else if (body.role == "teacher") {
+      } else if (role == "teacher") {
         const check = await User.findOne({
           where: {
-            email: body.email,
+            email: email,
           },
         });
         if (check) {
@@ -938,12 +993,12 @@ module.exports = {
             result: {},
           });
         }
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
-          fullName: body.fullName,
-          email: body.email,
+          fullName: fullName,
+          email: email,
           password: hashedPassword,
-          role: body.role,
+          role: role,
         });
         const token = jwt.sign(
           {
@@ -952,6 +1007,17 @@ module.exports = {
           },
           process.env.SECRET_TOKEN,
           { expiresIn: "24h" },
+        );
+        sendMail(
+          email,
+          "Register Successfully",
+          `
+          &lt;h1&gt; Wellcome To Lektur &lt;/h1&gt;
+          &lt;p&gt; hi teacher &lt;/p&gt;
+          &lt;p&gt; click link below to login &lt;/p&gt;
+          &lt;a href="https://lektur-app-glints16.herokuapp.com/login"&gt;Login&lt;/a&gt;
+          &lt;p&gt; Thank you for being a part of lektur &lt;/p&gt;
+          `,
         );
         res.status(201).json({
           status: "Success",
@@ -1282,7 +1348,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Feb 25 2022 03:28:26 GMT+0800 (Central Indonesia Time)
+                at Sat Feb 26 2022 00:31:24 GMT+0800 (Central Indonesia Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

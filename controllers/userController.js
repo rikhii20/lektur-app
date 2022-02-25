@@ -49,7 +49,7 @@ module.exports = {
           <p> Thank you for being a part of lektur </p>
           `,
         );
-        res.status(200).json({
+        res.status(201).json({
           status: "Success",
           message: "Successfully to create an student account",
           result: {
@@ -102,7 +102,7 @@ module.exports = {
           <p> Thank you for being a part of lektur </p>
           `,
         );
-        res.status(200).json({
+        res.status(201).json({
           status: "Success",
           message: "Successfully to create an teacher account",
           result: {
