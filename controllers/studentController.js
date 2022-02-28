@@ -415,7 +415,7 @@ module.exports = {
           result: {},
         });
       }
-      res.status(200).json({
+      res.status(201).json({
         status: "Success",
         message: "Successfully create the data",
         result: progress,

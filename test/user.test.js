@@ -214,7 +214,6 @@ test("DELETE /api/v1/user/delete-image", async () => {
     password: "Rikhi123!",
   };
   const res = await supertest(app).post("/api/v1/user/login").send(user);
-  console.log(res.body.result.token);
   await supertest(app)
     .delete("/api/v1/user/delete-image")
     .set("Authorization", `Bearer ${res.body.result.token}`)

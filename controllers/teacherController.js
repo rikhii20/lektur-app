@@ -272,7 +272,7 @@ module.exports = {
           `,
         );
       }
-      res.status(200).json({
+      res.status(201).json({
         status: "Success",
         message: "Successfully sent the invitation email",
         result: invite,
