@@ -233,45 +233,22 @@ module.exports = {
     const { user } = req;
     const { courseId } = req.query;
     try {
-      const student = await User.findOne({
-        where: {
-          email,
-        },
+      const invite = await Invitation.create({
+        studentEmail: email,
+        teacher_id: user.id,
+        course_id: courseId,
+        isApproved: false,
       });
-      let invite;
-      if (!student) {
-        invite = await Invitation.create({
-          studentEmail: email,
-          teacher_id: user.id,
-          course_id: courseId,
-          isApproved: false,
-        });
-        sendMail(
-          email,
-          "Course Invitation",
-          `
+      sendMail(
+        email,
+        "Course Invitation",
+        `
           <h1>You've been invited to join the course</h1>
           <p> click link below to enroll the course</p>
-          <a href="https://lektur-app-glints16.herokuapp.com/register">Click Here</a>
+          <a href="https://lektur-app-glints16.herokuapp.com/course-invitation">Click Here</a>
           `,
-        );
-      } else {
-        invite = await Invitation.create({
-          studentEmail: email,
-          teacher_id: user.id,
-          course_id: courseId,
-          isApproved: false,
-        });
-        sendMail(
-          email,
-          "Course Invitation",
-          `
-          <h1>You've been invited to join the course</h1>
-          <p> click link below to enroll the course</p>
-          <a href="https://lektur-app-glints16.herokuapp.com/detail">Click Here</a>
-          `,
-        );
-      }
+      );
+
       res.status(201).json({
         status: "Success",
         message: "Successfully sent the invitation email",

@@ -1,5 +1,6 @@
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
+const errorHandler = require("../utils/errorHandler");
 
 module.exports = {
   isLogin: async (req, res, next) => {
@@ -31,7 +32,7 @@ module.exports = {
       };
       next();
     } catch (err) {
-      next(err);
+      errorHandler(error, res);
     }
   },
   isTeacher: async (req, res, next) => {
@@ -73,11 +74,7 @@ module.exports = {
       };
       next();
     } catch (error) {
-      return res.status(401).json({
-        status: "Unauthorized",
-        message: error.message,
-        result: {},
-      });
+      errorHandler(error, res);
     }
   },
 };
