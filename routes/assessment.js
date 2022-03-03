@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isTeacher } = require("../middlewares/auth");
+const { isTeacher, isLogin } = require("../middlewares/auth");
 
 const {
   createAssessment,
@@ -9,7 +9,7 @@ const {
 } = require("../controllers/assessmentController");
 
 router.post("/create", isTeacher, createAssessment);
-router.get("/:question_id", isTeacher, getAssessment);
+router.get("/fetch", isLogin, getAssessment);
 router.delete("/delete/:question_id", isTeacher, deleteAssessment);
 
 module.exports = router;

@@ -10,8 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Assessment.hasMany(models.Question, {
-        as: "question",
+        as: "questions",
         foreignKey: "assessment_id",
+      });
+      Assessment.belongsTo(models.Course, {
+        as: "course",
+        foreignKey: "course_id",
       });
     }
   }

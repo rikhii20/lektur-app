@@ -236,16 +236,17 @@ module.exports = {
     try {
       const student = await Course.findOne({
         attributes: ["id"],
+        order: [["contents", "materials", "createdAt", "ASC"]],
         include: [
           {
             model: Content,
             as: "contents",
-            attributes: ["title"],
+            attributes: ["id", "title"],
             include: [
               {
                 model: Material,
                 as: "materials",
-                attributes: ["name"],
+                attributes: ["id", "name"],
               },
             ],
           },

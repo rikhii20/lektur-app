@@ -1,11 +1,11 @@
-const { Assessment, Question, Option } = require("../models");
+const { Assessment, Question, Option, Course } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 const joi = require("joi");
 
 const AssessmentController = {
   createAssessment: async (req, res) => {
-    const {courseId, assessmentId, questId} = req.query
-    const body = req.body
+    const { courseId } = req.query;
+    const body = req.body;
     try {
       const schema = joi.object({
         course_id: joi.number().required(),
@@ -13,7 +13,7 @@ const AssessmentController = {
       const { error } = schema.validate({
         course_id: courseId,
       });
-      console.log(body, courseId)
+      console.log(body, courseId);
       if (error) {
         return res.status(400).json({
           message: error.message,
@@ -24,7 +24,6 @@ const AssessmentController = {
       const newAssessment = await Assessment.create({
         course_id: courseId,
       });
-
       if (!newAssessment) {
         return res.status(500).json({
           message: error.message,
@@ -33,87 +32,72 @@ const AssessmentController = {
         });
       }
 
-      for await (const quest of body){
+      for await (const quest of body) {
+        const getAssessmentId = await Assessment.findAll();
         await Question.create({
-          assessment_id : assessmentId, 
-          question : quest.question,
-          remarks : quest.remarks
-        })	
-
+          assessment_id:
+            getAssessmentId[getAssessmentId.length - 1].dataValues.id,
+          question: quest.question,
+          remarks: quest.remarks,
+        });
+        const getQuestionId = await Question.findAll();
         for await (const option of quest.options) {
           await Option.create({
-            question_id : questId, 
-            option : option,
-            isTrue : false
-          })
+            question_id: getQuestionId[getQuestionId.length - 1].dataValues.id,
+            option: option,
+            isTrue: false,
+          });
         }
-        }
+      }
 
       res.status(201).json({
         message: "Create Assessment Success",
         status: "OK Assemenst done Create",
         result: newAssessment,
       });
-
     } catch (error) {
       console.log(error);
       errorHandler(error, res);
     }
   },
-  
-  // getAllAssessment: async (req, res) => {
-  //   try {
-  //     const getAllQuestion = await Question.findAll({
-  //       order: [["createdAt", "ASC"]],
-  //       attributes: { exclude: ["createdAt", "updateAt", "value"] },
-  //       include: [
-  //         {
-  //           model: Option,
-  //           as: "Option",
-  //           attributes: ["description"],
-  //         },
-  //       ],
-  //     });
-  //     if (!getAllQuestion.length) {
-  //       res.status(404).json({
-  //         status: "Not Found",
-  //         message: "Data is Empty",
-  //         result: getAllQuestion,
-  //       });
-  //     }
-  //     res.status(201).json({
-  //       status: "successfully",
-  //       message: "successfully Get Assemenst All",
-  //       result: getAllQuestion,
-  //     });
-  //   } catch (error) {
-  //     errorHandler(error, res);
-  //   }
-  // },
-  
   getAssessment: async (req, res) => {
-    const { questionId } = req.query; //
+    const { courseId } = req.query;
     try {
-      const getAssessment = await Assessment.findOne({
+      const getAssessment = await Course.findOne({
+        where: { id: courseId },
         include: [
           {
-            model: Question,
-            as: "question",
+            model: Assessment,
+            as: "assessment",
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
             include: [
               {
-                model: Option,
-                as: "option"
-              }
-            ]
+                model: Question,
+                as: "questions",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+                include: [
+                  {
+                    model: Option,
+                    as: "options",
+                    attributes: {
+                      exclude: ["createdAt", "updatedAt"],
+                    },
+                  },
+                ],
+              },
+            ],
           },
         ],
-        where: { question_id },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
       });
 
-      if (!getAssessment.length) {
+      if (getAssessment.length == 0) {
         res.status(404).json({
           status: "Not Found",
           message: "Data is Empty",
@@ -126,7 +110,6 @@ const AssessmentController = {
         message: "successfully retrieved Assessment",
         result: getAssessment,
       });
-
     } catch (error) {
       errorHandler(error, res);
     }
@@ -175,7 +158,7 @@ const AssessmentController = {
   //     errorHandler(error, res);
   //   }
   // },
-  
+
   deleteAssessment: async (req, res) => {
     const { question_id } = req.params;
     try {
@@ -195,7 +178,6 @@ const AssessmentController = {
         message: "succussfully deleted Assessment",
         result: {},
       });
-
     } catch (error) {
       errorHandler(error, res);
     }

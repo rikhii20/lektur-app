@@ -1,14 +1,7 @@
 jest.setTimeout(30000);
 const app = require("../app");
 const supertest = require("supertest");
-const { Course } = require("../models");
 let id;
-
-// afterAll((done) => {
-//   Course.destroy({ truncate: true }).then((res) => {
-//     done();
-//   });
-// });
 
 test("POST api/v1/course/create", async () => {
   const user = {

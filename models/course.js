@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "progress",
         foreignKey: "course_id",
       });
+      Course.hasOne(models.Assessment, {
+        as: "assessment",
+        foreignKey: "course_id",
+      });
     }
   }
   Course.init(
