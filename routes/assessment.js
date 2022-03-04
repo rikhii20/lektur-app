@@ -6,13 +6,14 @@ const {
   createAssessment,
   getAssessment,
   deleteAssessment,
+  updateQuestion,
+  updateOption,
+  getAssessmentKey,
 } = require("../controllers/assessmentController");
-
-const { updateQuestion } = require("../controllers/questionController");
-const { updateOption } = require("../controllers/optionController");
 
 router.post("/create", isTeacher, createAssessment);
 router.get("/fetch", isLogin, getAssessment);
+router.get("/fetch/key", isLogin, getAssessmentKey);
 router.delete("/delete/:question_id", isTeacher, deleteAssessment);
 
 router.put("/question/edit", isTeacher, updateQuestion);

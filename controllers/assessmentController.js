@@ -73,6 +73,58 @@ const AssessmentController = {
                 model: Question,
                 as: "questions",
                 attributes: {
+                  exclude: ["createdAt", "updatedAt", "remarks"],
+                },
+                include: [
+                  {
+                    model: Option,
+                    as: "options",
+                    attributes: {
+                      exclude: ["createdAt", "updatedAt", "isTrue"],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+      if (!getAssessment) {
+        return res.status(404).json({
+          status: "Not Found",
+          message: `Can't find the course with id ${courseId}`,
+          result: {},
+        });
+      }
+      res.status(200).json({
+        status: "success",
+        message: "successfully retrieved Assessment",
+        result: getAssessment,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  getAssessmentKey: async (req, res) => {
+    const { courseId } = req.query;
+    try {
+      const getAssessment = await Course.findOne({
+        where: { id: courseId },
+        include: [
+          {
+            model: Assessment,
+            as: "assessment",
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            include: [
+              {
+                model: Question,
+                as: "questions",
+                attributes: {
                   exclude: ["createdAt", "updatedAt"],
                 },
                 include: [
@@ -92,16 +144,14 @@ const AssessmentController = {
           exclude: ["createdAt", "updatedAt"],
         },
       });
-
-      if (getAssessment.length == 0) {
-        res.status(404).json({
+      if (!getAssessment) {
+        return res.status(404).json({
           status: "Not Found",
-          message: "Data is Empty",
+          message: `Can't find the course with id ${courseId}`,
           result: {},
         });
       }
-
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         message: "successfully retrieved Assessment",
         result: getAssessment,
@@ -110,51 +160,99 @@ const AssessmentController = {
       errorHandler(error, res);
     }
   },
-
-  // updateAssessment: async (req, res) => {
-  //   const body = req.body;
-  //   const { question_id } = req.query;
-  //   try {
-  //     const schema = joi.object({
-  //       description: joi.string().required(),
-  //       remark: joi.string().required(),
-  //       correctOption: joi.string().required(),
-  //       course_id: joi.number().required(),
-  //     });
-  //     const { error } = schema.validate({ ...body });
-  //     if (error) {
-  //       return res.status(400).json({
-  //         message: error.message,
-  //         status: "Bad Request",
-  //         result: {},
-  //       });
-  //     }
-  //     const checkUpdate = await Question.update(
-  //       { ...body },
-  //       {
-  //         where: {
-  //           question_id,
-  //         },
-  //       },
-  //     );
-  //     if (!checkUpdate[0]) {
-  //       return res.status(500).json({
-  //         status: "Internal Server Error",
-  //         message: "Failed to Update assessment",
-  //         result: checkUpdate,
-  //       });
-  //     }
-  //     const updateQuestion = await Question.findByPk(question_id);
-  //     res.status(201).json({
-  //       status: "success",
-  //       message: "success Update assessment",
-  //       result: updateQuestion,
-  //     });
-  //   } catch (error) {
-  //     errorHandler(error, res);
-  //   }
-  // },
-
+  updateQuestion: async (req, res) => {
+    const body = req.body;
+    const { questionId } = req.query;
+    try {
+      const schema = joi.object({
+        question: joi.string(),
+        remarks: joi.string(),
+        assessment_id: joi.number(),
+      });
+      const { error } = schema.validate({ ...body });
+      if (error) {
+        return res.status(400).json({
+          message: error.message,
+          status: "Bad Request",
+          result: {},
+        });
+      }
+      const checkUpdate = await Question.update(
+        { ...body },
+        {
+          where: {
+            id: questionId,
+          },
+        },
+      );
+      console.log(checkUpdate);
+      if (checkUpdate[0] != 1) {
+        return res.status(500).json({
+          status: "Internal Server Error",
+          message: "Failed to Update assessment",
+          result: {},
+        });
+      }
+      const updateQuestion = await Question.findOne({
+        where: {
+          id: questionId,
+        },
+      });
+      res.status(200).json({
+        status: "success",
+        message: "success Update assessment",
+        result: updateQuestion,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
+  updateOption: async (req, res) => {
+    const body = req.body;
+    const { optionId } = req.query;
+    try {
+      const schema = joi.object({
+        question_id: joi.number(),
+        option: joi.string(),
+        isTrue: joi.boolean(),
+      });
+      const { error } = schema.validate({ ...body });
+      if (error) {
+        return res.status(400).json({
+          message: error.message,
+          status: "Bad Request",
+          result: {},
+        });
+      }
+      const checkUpdate = await Option.update(
+        { ...body },
+        {
+          where: {
+            id: optionId,
+          },
+        },
+      );
+      if (checkUpdate[0] != 1) {
+        return res.status(500).json({
+          status: "Internal Server Error",
+          message: "Failed to Update assessment",
+          result: {},
+        });
+      }
+      const updateOption = await Option.findOne({
+        where: {
+          id: optionId,
+        },
+      });
+      res.status(201).json({
+        status: "success",
+        message: "success Update assessment",
+        result: updateOption,
+      });
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  },
   deleteAssessment: async (req, res) => {
     const { question_id } = req.params;
     try {
@@ -179,5 +277,4 @@ const AssessmentController = {
     }
   },
 };
-
 module.exports = AssessmentController;
