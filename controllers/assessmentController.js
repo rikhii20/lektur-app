@@ -13,7 +13,6 @@ const AssessmentController = {
       const { error } = schema.validate({
         course_id: courseId,
       });
-      console.log(body, courseId);
       if (error) {
         return res.status(400).json({
           message: error.message,
@@ -31,7 +30,6 @@ const AssessmentController = {
           result: {},
         });
       }
-
       for await (const quest of body) {
         const getAssessmentId = await Assessment.findAll();
         await Question.create({
@@ -49,14 +47,12 @@ const AssessmentController = {
           });
         }
       }
-
       res.status(201).json({
         message: "Create Assessment Success",
         status: "OK Assemenst done Create",
         result: newAssessment,
       });
     } catch (error) {
-      console.log(error);
       errorHandler(error, res);
     }
   },

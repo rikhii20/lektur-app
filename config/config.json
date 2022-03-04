@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "root",
+    "username": "postgres",
     "password": "1324fairplay",
     "database": "lektur-app",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "test": {
     "username": "root",

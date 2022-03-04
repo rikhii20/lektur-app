@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1646287778375" clover="3.2.0">
-  <project timestamp="1646287778375" name="All files">
-    <metrics statements="794" coveredstatements="585" conditionals="183" coveredconditionals="88" methods="92" coveredmethods="78" elements="1069" coveredelements="751" complexity="0" loc="794" ncloc="794" packages="9" files="44" classes="44"/>
+<coverage generated="1646386783964" clover="3.2.0">
+  <project timestamp="1646386783964" name="All files">
+    <metrics statements="789" coveredstatements="584" conditionals="181" coveredconditionals="87" methods="92" coveredmethods="78" elements="1062" coveredelements="749" complexity="0" loc="789" ncloc="789" packages="9" files="44" classes="44"/>
     <package name="be_lektur">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="app.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\app.js">
@@ -23,9 +23,9 @@
       </file>
     </package>
     <package name="be_lektur.controllers">
-      <metrics statements="476" coveredstatements="288" conditionals="150" coveredconditionals="68" methods="42" coveredmethods="31"/>
+      <metrics statements="470" coveredstatements="286" conditionals="148" coveredconditionals="67" methods="42" coveredmethods="31"/>
       <file name="assessmentController.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\controllers\assessmentController.js">
-        <metrics statements="39" coveredstatements="5" conditionals="8" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="37" coveredstatements="5" conditionals="8" coveredconditionals="0" methods="3" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
@@ -35,36 +35,34 @@
         <line num="9" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="27" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="28" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="26" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
         <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="59" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
         <line num="60" count="0" type="stmt"/>
-        <line num="64" count="0" type="stmt"/>
-        <line num="65" count="0" type="stmt"/>
-        <line num="66" count="0" type="stmt"/>
-        <line num="100" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="101" count="0" type="stmt"/>
-        <line num="108" count="0" type="stmt"/>
-        <line num="114" count="0" type="stmt"/>
-        <line num="163" count="0" type="stmt"/>
-        <line num="164" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="96" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="159" count="0" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="161" count="0" type="stmt"/>
+        <line num="164" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="165" count="0" type="stmt"/>
-        <line num="168" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="169" count="0" type="stmt"/>
-        <line num="176" count="0" type="stmt"/>
-        <line num="182" count="0" type="stmt"/>
-        <line num="187" count="6" type="stmt"/>
+        <line num="172" count="0" type="stmt"/>
+        <line num="178" count="0" type="stmt"/>
+        <line num="183" count="6" type="stmt"/>
       </file>
       <file name="contentController.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\controllers\contentController.js">
         <metrics statements="56" coveredstatements="42" conditionals="18" coveredconditionals="9" methods="5" coveredmethods="5"/>
@@ -351,7 +349,7 @@
         <line num="504" count="0" type="stmt"/>
       </file>
       <file name="teacherController.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\controllers\teacherController.js">
-        <metrics statements="59" coveredstatements="40" conditionals="20" coveredconditionals="9" methods="4" coveredmethods="4"/>
+        <metrics statements="55" coveredstatements="38" conditionals="18" coveredconditionals="8" methods="4" coveredmethods="4"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
         <line num="11" count="6" type="stmt"/>
@@ -404,13 +402,9 @@
         <line num="234" count="1" type="stmt"/>
         <line num="235" count="1" type="stmt"/>
         <line num="236" count="1" type="stmt"/>
-        <line num="242" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="243" count="1" type="stmt"/>
-        <line num="249" count="1" type="stmt"/>
-        <line num="259" count="0" type="stmt"/>
-        <line num="265" count="0" type="stmt"/>
-        <line num="275" count="1" type="stmt"/>
-        <line num="281" count="0" type="stmt"/>
+        <line num="242" count="1" type="stmt"/>
+        <line num="252" count="1" type="stmt"/>
+        <line num="258" count="0" type="stmt"/>
       </file>
       <file name="userController.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\controllers\userController.js">
         <metrics statements="106" coveredstatements="60" conditionals="22" coveredconditionals="14" methods="11" coveredmethods="6"/>
@@ -546,38 +540,39 @@
       </file>
     </package>
     <package name="be_lektur.middlewares">
-      <metrics statements="63" coveredstatements="50" conditionals="24" coveredconditionals="14" methods="11" coveredmethods="11"/>
+      <metrics statements="64" coveredstatements="51" conditionals="24" coveredconditionals="14" methods="11" coveredmethods="11"/>
       <file name="auth.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\middlewares\auth.js">
-        <metrics statements="29" coveredstatements="22" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2"/>
+        <metrics statements="30" coveredstatements="23" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
-        <line num="4" count="6" type="stmt"/>
-        <line num="6" count="9" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
         <line num="7" count="9" type="stmt"/>
-        <line num="8" count="9" type="cond" truecount="1" falsecount="1"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="14" count="9" type="stmt"/>
+        <line num="8" count="9" type="stmt"/>
+        <line num="9" count="9" type="cond" truecount="1" falsecount="1"/>
+        <line num="10" count="0" type="stmt"/>
         <line num="15" count="9" type="stmt"/>
         <line num="16" count="9" type="stmt"/>
-        <line num="21" count="9" type="cond" truecount="1" falsecount="1"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="27" count="9" type="stmt"/>
-        <line num="32" count="9" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="38" count="16" type="stmt"/>
+        <line num="17" count="9" type="stmt"/>
+        <line num="22" count="9" type="cond" truecount="1" falsecount="1"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="28" count="9" type="stmt"/>
+        <line num="33" count="9" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
         <line num="39" count="16" type="stmt"/>
-        <line num="40" count="16" type="cond" truecount="1" falsecount="1"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="47" count="16" type="stmt"/>
+        <line num="40" count="16" type="stmt"/>
+        <line num="41" count="16" type="cond" truecount="1" falsecount="1"/>
+        <line num="42" count="0" type="stmt"/>
         <line num="48" count="16" type="stmt"/>
-        <line num="50" count="16" type="stmt"/>
-        <line num="55" count="16" type="cond" truecount="1" falsecount="1"/>
-        <line num="56" count="0" type="stmt"/>
-        <line num="62" count="16" type="cond" truecount="1" falsecount="1"/>
-        <line num="63" count="0" type="stmt"/>
-        <line num="69" count="16" type="stmt"/>
-        <line num="74" count="16" type="stmt"/>
-        <line num="76" count="0" type="stmt"/>
+        <line num="49" count="16" type="stmt"/>
+        <line num="51" count="16" type="stmt"/>
+        <line num="56" count="16" type="cond" truecount="1" falsecount="1"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="63" count="16" type="cond" truecount="1" falsecount="1"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="70" count="16" type="stmt"/>
+        <line num="75" count="16" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
       </file>
       <file name="upload-files.js" path="C:\Users\Rikhi\Desktop\project-glints\Lektur-apps\be_lektur\middlewares\upload-files.js">
         <metrics statements="24" coveredstatements="20" conditionals="12" coveredconditionals="8" methods="7" coveredmethods="7"/>
