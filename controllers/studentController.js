@@ -7,6 +7,9 @@ const {
   Content,
   Material,
   StudentContent,
+  Assessment,
+  Question,
+  Option,
 } = require("../models");
 
 module.exports = {
@@ -144,8 +147,9 @@ module.exports = {
         attributes: ["fullName", "email", "image"],
         include: [
           {
-            model: StudentQuestion,
-            as: "question",
+            model: StudentCourse,
+            as: "courses",
+            attributes: ["id", "status"],
             include: [
               {
                 model: Course,
@@ -153,9 +157,23 @@ module.exports = {
                 attributes: ["id", "title", "image"],
                 include: [
                   {
-                    model: User,
-                    as: "by",
-                    attributes: ["id", "fullName"],
+                    model: Assessment,
+                    as: "assessment",
+                    attributes: ["id", "course_id"],
+                    include: [
+                      {
+                        model: Question,
+                        as: "questions",
+                        attributes: ["id", "question"],
+                        include: [
+                          {
+                            model: Option,
+                            as: "options",
+                            attributes: ["id", "option"],
+                          },
+                        ],
+                      },
+                    ],
                   },
                 ],
               },
