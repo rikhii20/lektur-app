@@ -1,14 +1,14 @@
 {
   "development": {
     "username": "root",
-    "password": "1324fairplay",
+    "password": null,
     "database": "lektur-app",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "1324fairplay",
+    "password": null,
     "database": "lektur_test",
     "host": "127.0.0.1",
     "dialect": "mysql", 
