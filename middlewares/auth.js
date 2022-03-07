@@ -31,7 +31,7 @@ module.exports = {
         role: user.role,
       };
       next();
-    } catch (err) {
+    } catch (error) {
       errorHandler(error, res);
     }
   },
