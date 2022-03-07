@@ -8,9 +8,8 @@ passport.use(
   "google",
   new GoogleStrategy(
     {
-      clientID:
-        "750121174033-dr287087lrjri680f2jqrkef9mtdt0vd.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientID: process.env.CLIENT_ID_GOOGLE,
+      clientSecret: process.env.CLIENT_SECRET_GOOGLE,
       callbackURL: process.env.GOOGLE_CALLBACK_URI,
     },
     async function (accessToken, refreshToken, profile, cb) {
