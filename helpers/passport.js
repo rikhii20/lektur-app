@@ -26,8 +26,8 @@ passport.use(
   "facebook",
   new FacebookStrategy(
     {
-      clientID: "996627281269216",
-      clientSecret: "95872e1ed9765c80f8083e746d474b08",
+      clientID: process.env.CLIENT_ID_FB,
+      clientSecret: process.env.CLIENT_SECRET_FB,
       callbackURL: process.env.FACEBOOK_CALLBACK_URI,
       profileFields: ["id", "displayName", "email"],
     },
