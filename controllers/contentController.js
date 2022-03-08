@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { Content, Material, Course } = require("../models");
+const { Content, Material, Course, Category } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 
 module.exports = {
@@ -71,6 +71,18 @@ module.exports = {
               exclude: ["createdAt", "updatedAt"],
             },
           },
+          {
+            model: Course,
+            as: "course",
+            attributes: ["id", "image", "description"],
+            include: [
+              {
+                model: Category,
+                as: "category",
+                attributes: ["id", "name"],
+              },
+            ],
+          },
         ],
         attributes: {
           exclude: ["createdAt", "updatedAt"],
@@ -107,6 +119,18 @@ module.exports = {
             model: Material,
             as: "materials",
             attributes: ["name", "url"],
+          },
+          {
+            model: Course,
+            as: "course",
+            attributes: ["id", "image", "description"],
+            include: [
+              {
+                model: Category,
+                as: "category",
+                attributes: ["id", "name"],
+              },
+            ],
           },
         ],
       });
