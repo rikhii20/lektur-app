@@ -137,7 +137,6 @@ module.exports = {
         where: {
           student_id: user.id,
         },
-        group: "StudentCourse.student_id",
       });
       const studentIds = studentCourse.map((e) => e.student_id);
       const student = await User.findAll({
