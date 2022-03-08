@@ -85,7 +85,7 @@ module.exports = {
           },
         ],
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["createdAt", "updatedAt", "course_id"],
         },
       });
       if (contents.length == 0) {
@@ -112,7 +112,7 @@ module.exports = {
           id: contentId,
         },
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["createdAt", "updatedAt", "course_id"],
         },
         include: [
           {
