@@ -10,6 +10,8 @@ const {
   Assessment,
   Question,
   Option,
+  StudentAssessment,
+  StudentQuestion,
 } = require("../models");
 
 module.exports = {

@@ -1,4 +1,4 @@
-const { Assessment, Question, Option, Course } = require("../models");
+const { Assessment, Question, Option, Course, User } = require("../models");
 const errorHandler = require("../utils/errorHandler");
 const joi = require("joi");
 
@@ -115,6 +115,11 @@ const AssessmentController = {
         where: { id: courseId },
         include: [
           {
+            model: User,
+            as: "by",
+            attributes: ["id", "fullName"],
+          },
+          {
             model: Assessment,
             as: "assessment",
             attributes: {
@@ -141,7 +146,7 @@ const AssessmentController = {
           },
         ],
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["createdAt", "updatedAt", "user_id"],
         },
       });
       if (!getAssessment) {

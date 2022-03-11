@@ -201,7 +201,7 @@ module.exports = {
         email,
         "Password Reset",
         `<h1>Password Reset Confirmation</h1>
-        <a href="https://localhost:5000/api/v1/user/forgot?code=${passwordReset.validationCode}">Click Here</a>
+        <a href="https://lektur-app-glints16.herokuapp.com/reset-password?code=${passwordReset.validationCode}">Click Here</a>
         `,
       );
       res.status(200).json({
